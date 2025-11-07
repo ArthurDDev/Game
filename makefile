@@ -1,5 +1,5 @@
 TARGET = game
-SOURCES = src/main.c src/vec.c src/entity.c
+SOURCES = src/*.c
 ALLEGRO_FLAGS = $(shell pkg-config allegro-5 allegro_main-5 allegro_font-5 allegro_primitives-5 --libs --cflags)
 
 all:
