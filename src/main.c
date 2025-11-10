@@ -41,11 +41,14 @@ int player_process(entity *e)
 	else
 		vel.x = 0.0;
 
-	vel.y += 2.0; // gravidade
+	vel.y += 2.0;
 	
 	e->pos.y ++;
-	if (G->keys[ALLEGRO_KEY_W] && collides(e, floor))
-		vel.y = -30.0;
+	if (collides(e, floor)) {
+		vel.y = 0.0;
+		if (G->keys[ALLEGRO_KEY_W])
+			vel.y = -30.0;
+	}
 	e->pos.y --;
 
 	printf("Player vel: (%f, %f)\n", vel.x, vel.y);
