@@ -7,14 +7,14 @@
 - [X] Entidades
 - [X] Renderização de entidades
 - [X] Lógica em entidades
-- [ ] Input
+- [X] Input
 - [ ] Colisões
 - [ ] Mapas
 - [ ] Níveis
 - [ ] Sprites
 - [ ] Animações
 - [ ] UI
-- [ ] Ambientes ?
+- [X] Ambientes ?
 
 ### Jogo
 

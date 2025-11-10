@@ -2,10 +2,12 @@
 #define __ENTITY
 
 #include "vec.h"
+#include "hitbox.h"
 #include <allegro5/allegro5.h>
 
 typedef struct entity {
     vec pos;
+    hitbox *hitbox;
     void *data;
     ALLEGRO_BITMAP *sprite;
 } entity;

@@ -8,6 +8,7 @@ entity *entity_create(vec pos)
     e->pos = pos;
     e->sprite = NULL;
     e->data = NULL;
+    e->hitbox = NULL;
 
     return e;
 }
