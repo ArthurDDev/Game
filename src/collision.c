@@ -1,6 +1,7 @@
 #include "collision.h"
 
 #include "entity.h"
+#include "env.h"
 
 void hitbox_attatch(entity *e, double w, double h, char flags)
 {
@@ -32,7 +33,27 @@ char collides(entity *a, entity *b)
     return 0;
 }
 
-char collides_any(entity *e, env *env)
+struct nodo_t {
+    struct nodo_t *prox;
+    int (*processFunc) (entity *e);
+    entity *entity;
+};
+
+struct list_t {
+    struct nodo_t *head;
+    int tam;
+};
+
+char collides_env(entity *e, env *env)
 {
+    struct nodo_t *n = ((struct list_t *)env->entities)->head;
+
+    while (n) {
+        if (collides(e, n->entity))
+            return 1;
+
+        n = n->prox;
+    }
+
     return 0;
 }

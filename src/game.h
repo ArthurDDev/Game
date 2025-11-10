@@ -17,9 +17,10 @@ typedef struct spriteProvider spriteProvider;
 #define C_WHITE al_map_rgb(255, 255, 255)
 #define C_RED al_map_rgb(255, 0, 0)
 
-#define PROCESS_ENV 0
-#define ASYNC_PROCESS_ENV 1
-#define RENDER_ENV 2
+#define MASTER_ENV 0
+#define PROCESS_ENV 1
+#define ASYNC_PROCESS_ENV 2
+#define RENDER_ENV 3
 
 #define KEY_SEEN 1
 #define KEY_DOWN 2
@@ -44,5 +45,7 @@ struct game {
 game *game_create(/*level *first, level **levels*/);
 int game_destroy(game *g);
 int game_process(game *g);
+
+int insert_env(game *g, env *e);
 
 #endif

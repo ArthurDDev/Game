@@ -6,6 +6,7 @@ typedef struct entity entity;
 typedef struct env env;
 struct env {
     void *entities;
+    int id;
 
     struct env *(*destroy) (struct env *e);
 
@@ -15,6 +16,6 @@ struct env {
     int (*compute) (struct env *e);
 };
 
-env *processEnv_create();
+env *processEnv_create(int id);
 
 #endif

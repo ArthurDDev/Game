@@ -35,12 +35,13 @@ game *game_create()
 
     // Ambientes
 
-    g->n_envs = 3;
+    g->n_envs = 4;
     g->envs = malloc(sizeof(env *) * g->n_envs);
 
-    g->envs[PROCESS_ENV] = processEnv_create();
-    g->envs[ASYNC_PROCESS_ENV] = processEnv_create();
-    g->envs[RENDER_ENV] = processEnv_create();
+    g->envs[MASTER_ENV] = processEnv_create(MASTER_ENV);
+    g->envs[PROCESS_ENV] = processEnv_create(MASTER_ENV);
+    g->envs[ASYNC_PROCESS_ENV] = processEnv_create(MASTER_ENV);
+    g->envs[RENDER_ENV] = processEnv_create(MASTER_ENV);
 
     // Sprites
 
@@ -55,11 +56,12 @@ game *game_create()
 
 int game_destroy(game *g)
 {
+    g->envs[MASTER_ENV]->compute(g->envs[MASTER_ENV]);
     
-    g->envs[PROCESS_ENV]->destroy(g->envs[PROCESS_ENV]);
-    g->envs[ASYNC_PROCESS_ENV]->destroy(g->envs[ASYNC_PROCESS_ENV]);
-    g->envs[RENDER_ENV]->destroy(g->envs[RENDER_ENV]);
-    
+    for (int i = 0; i < g->n_envs; i++) {
+        g->envs[i]->destroy(g->envs[i]);
+    }
+
     spriteProvider_destroy(g->sprites);
     
     al_destroy_font(g->font);
@@ -113,4 +115,13 @@ int game_process(game *g)
     }
 
     return 1;
+}
+
+int insert_env(game *g, env *e)
+{
+    g->envs = realloc(g->envs, sizeof(env *) * (g->n_envs + 1));
+    g->envs[g->n_envs] = e;
+    g->n_envs += 1;
+
+    return g->n_envs - 1;
 }

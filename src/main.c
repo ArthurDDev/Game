@@ -12,9 +12,7 @@
 
 game *G;
 
-entity *floor;
-
-int floor_render(entity *e)
+int soil_render(entity *e)
 {
 	al_draw_filled_rectangle(e->pos.x, e->pos.y, e->pos.x + e->hitbox->size.x, e->pos.y + e->hitbox->size.y, C_WHITE);
 }
@@ -44,19 +42,17 @@ int player_process(entity *e)
 	vel.y += 2.0;
 	
 	e->pos.y ++;
-	if (collides(e, floor)) {
+	if (collides_env(e, G->envs[4])) {
 		vel.y = 0.0;
 		if (G->keys[ALLEGRO_KEY_W])
 			vel.y = -30.0;
 	}
 	e->pos.y --;
 
-	printf("Player vel: (%f, %f)\n", vel.x, vel.y);
-
-	if (collides(e, floor)) {
+	if (collides_env(e, G->envs[4])) {
 		vel.y = 0;
 		e->pos.y = e->pos.y / 1;
-		while (collides(e, floor))
+		while (collides_env(e, G->envs[4]))
 			e->pos.y -= 1.0;
 	}
 
@@ -64,31 +60,40 @@ int player_process(entity *e)
 	e->pos = vec_add(e->pos, vel);
 }
 
-int main(){
-	
+int main()
+{	
 	G = game_create();
+	int collision_env = insert_env(G, processEnv_create(G->n_envs));
 
-	entity *player = entity_create(vec_create(100.0, 100.0));
+	entity *player = entity_create(G);
+	player->pos = vec_create(100.0, 100.0);
 	player->sprite = spriteProvider_get(G->sprites, "assets/mysha.png");
-
 	hitbox_attatch(player, 32.0, 32.0, 0);
+
 	struct playerData *pdata = malloc(sizeof(struct playerData));
 	pdata->velocity = vec_create(0.0, 0.0);
 	player->data = pdata;
+	
+	subscribe(G->envs[PROCESS_ENV], player, player_process);
+	subscribe(G->envs[RENDER_ENV], player, player_render);
 
-	G->envs[PROCESS_ENV]->subscribe(player, G->envs[PROCESS_ENV], player_process);
-	G->envs[RENDER_ENV]->subscribe(player, G->envs[RENDER_ENV], player_render);
+	entity *soil = entity_create(G);
+	soil->pos = vec_create(0.0, 400.0);
+	hitbox_attatch(soil, WW, 100.0, 0);
+	subscribe(G->envs[RENDER_ENV], soil, soil_render);
+	subscribe(G->envs[collision_env], soil, NULL);
 
-	floor = entity_create(vec_create(0.0, 400.0));
-	hitbox_attatch(floor, WW, 100.0, 0);
-
-	G->envs[RENDER_ENV]->subscribe(floor, G->envs[RENDER_ENV], floor_render);
+	soil = entity_create(G);
+	soil->pos = vec_create(300.0, 300.0);
+	hitbox_attatch(soil, 400.0, 50.0, 0);
+	subscribe(G->envs[RENDER_ENV], soil, soil_render);
+	subscribe(G->envs[collision_env], soil, NULL);
 
 	if (game_process(G))
 		return 1;
-
+		
 	if (game_destroy(G))
 		return 1;
-
+	
 	return 0;
 }

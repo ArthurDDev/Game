@@ -21,7 +21,7 @@ struct list_t {
     int tam;
 };
 
-int compute (struct env *e)
+int env_compute (struct env *e)
 {
     if (!e || !e->entities)
         return 1;
@@ -35,9 +35,10 @@ int compute (struct env *e)
 
     return 0;
 }
-int subscribe (entity *e, struct env *target, int (*processFunc) (entity *e))
+
+int env_subscribe (entity *e, struct env *target, int (*processFunc) (entity *e))
 {
-    if (!target || !target->entities || !e || !processFunc)
+    if (!target || !target->entities || !e)
         return 1;
 
     struct nodo_t *n = ((struct list_t *)target->entities)->head;
@@ -59,7 +60,7 @@ int subscribe (entity *e, struct env *target, int (*processFunc) (entity *e))
     return ((struct list_t *)target->entities)->tam ++;
 }
 
-int unsubscribe (entity *e, struct env *target)
+int env_unsubscribe (entity *e, struct env *target)
 {
     if (!target || !target->entities || !e)
         return 1;
@@ -85,7 +86,7 @@ int unsubscribe (entity *e, struct env *target)
     return ((struct list_t *)target->entities)->tam --;
 }
 
-env *destroy (struct env *e)
+env *env_destroy (struct env *e)
 {
     if (!e || !e->entities)
         return NULL;
@@ -105,7 +106,7 @@ env *destroy (struct env *e)
     return NULL;
 }
 
-env *processEnv_create()
+env *processEnv_create(int id)
 {
     struct env *e = malloc(sizeof(env));
 
@@ -113,10 +114,11 @@ env *processEnv_create()
     l->head = NULL;
     l->tam = 0;
     
-    e->destroy = destroy;
-    e->subscribe = subscribe;
-    e->unsubscribe = unsubscribe;
-    e->compute = compute;
+    e->id = id;
+    e->destroy = env_destroy;
+    e->subscribe = env_subscribe;
+    e->unsubscribe = env_unsubscribe;
+    e->compute = env_compute;
 
     e->entities = l;
     
