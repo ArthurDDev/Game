@@ -2,12 +2,11 @@
 #include "vec.h"
 #include "stdlib.h"
 
-entity *entity_create(vec pos, int (*process) (entity *e), int (*render) (entity *e))
+entity *entity_create(vec pos)
 {
     entity *e = malloc(sizeof(entity));
     e->pos = pos;
-    e->process = process;
-    e->render = render;
+    e->sprite = NULL;
 
     return e;
 }
@@ -15,4 +14,5 @@ entity *entity_create(vec pos, int (*process) (entity *e), int (*render) (entity
 entity *entity_destroy(entity *e)
 {
     free(e);
+    
 }

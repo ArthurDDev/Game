@@ -6,12 +6,12 @@
 typedef struct env {
     void *entities;
 
-    struct env *(*root_destroy) (struct env *e);
+    struct env *(*destroy) (struct env *e);
 
-    int (*env_insert) (entity *e, struct env *target);
-    int (*env_remove) (entity *e, struct env *target);
+    int (*subscribe) (entity *e, struct env *target, int (*processFunc) (entity *e));
+    int (*unsubscribe) (entity *e, struct env *target);
 
-    int (*env_compute) (struct env *e);
+    int (*compute) (struct env *e);
 } env;
 
 env *processEnv_create();

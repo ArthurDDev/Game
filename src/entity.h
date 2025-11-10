@@ -2,14 +2,14 @@
 #define __ENTITY
 
 #include "vec.h"
+#include <allegro5/allegro5.h>
 
 typedef struct entity {
     vec pos;
-    int (*process) (struct entity *e);
-    int (*render) (struct entity *e);
+    ALLEGRO_BITMAP *sprite;
 } entity;
 
-entity *entity_create(vec pos, int (*process) (entity *e), int (*render) (entity *e));
+entity *entity_create(vec pos);
 entity *entity_destroy(entity *e);
 
 #endif

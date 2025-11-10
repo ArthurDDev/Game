@@ -4,9 +4,9 @@
 
 ### Engine
 
-- [ ] Entidades
-- [ ] Renderização de entidades
-- [ ] Lógica em entidades
+- [X] Entidades
+- [X] Renderização de entidades
+- [X] Lógica em entidades
 - [ ] Colisões
 - [ ] Mapas
 - [ ] Níveis

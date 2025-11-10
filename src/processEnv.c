@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "env.h"
 #include "entity.h"
@@ -10,6 +11,7 @@
 
 struct nodo_t {
     struct nodo_t *prox;
+    int (*processFunc) (entity *e);
     entity *entity;
 };
 
@@ -18,7 +20,7 @@ struct list_t {
     int tam;
 };
 
-int env_compute (struct env *e)
+int compute (struct env *e)
 {
     if (!e || !e->entities)
         return 1;
@@ -26,17 +28,15 @@ int env_compute (struct env *e)
     struct nodo_t *n = ((struct list_t *)e->entities)->head;
 
     while (n) {
-        if (n->entity->process)
-            n->entity->process(n->entity);
+        n->processFunc(n->entity);
         n = n->prox;
     }
 
     return 0;
 }
-
-int env_insert (entity *e, struct env *target)
+int subscribe (entity *e, struct env *target, int (*processFunc) (entity *e))
 {
-    if (!target || !target->entities || !e)
+    if (!target || !target->entities || !e || !processFunc)
         return 1;
 
     struct nodo_t *n = ((struct list_t *)target->entities)->head;
@@ -44,6 +44,7 @@ int env_insert (entity *e, struct env *target)
     struct nodo_t *n_new = malloc(sizeof(struct nodo_t));
 
     n_new->entity = e;
+    n_new->processFunc = processFunc;
     n_new->prox = NULL;
 
     while (n && n->prox)
@@ -57,7 +58,7 @@ int env_insert (entity *e, struct env *target)
     return ((struct list_t *)target->entities)->tam ++;
 }
 
-int env_remove (entity *e, struct env *target)
+int unsubscribe (entity *e, struct env *target)
 {
     if (!target || !target->entities || !e)
         return 1;
@@ -83,7 +84,7 @@ int env_remove (entity *e, struct env *target)
     return ((struct list_t *)target->entities)->tam --;
 }
 
-env *root_destroy (struct env *e)
+env *destroy (struct env *e)
 {
     if (!e || !e->entities)
         return NULL;
@@ -111,10 +112,10 @@ env *processEnv_create()
     l->head = NULL;
     l->tam = 0;
     
-    e->root_destroy = root_destroy;
-    e->env_insert = env_insert;
-    e->env_remove = env_remove;
-    e->env_compute = env_compute;
+    e->destroy = destroy;
+    e->subscribe = subscribe;
+    e->unsubscribe = unsubscribe;
+    e->compute = compute;
 
     e->entities = l;
     

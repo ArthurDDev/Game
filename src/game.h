@@ -5,6 +5,9 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_primitives.h>
 
+#include "env.h"
+#include "spriteProvider.h"
+
 #define FPS 30.0
 
 #define WW 1000
@@ -12,6 +15,10 @@
 
 #define C_BLACK al_map_rgb(0, 0, 0)
 #define C_WHITE al_map_rgb(255, 255, 255)
+
+#define PROCESS_ENV 1
+#define ASYNC_PROCESS_ENV 2
+#define RENDER_ENV 3
 
 typedef struct game {
     // Configuração do Allegro
@@ -23,7 +30,9 @@ typedef struct game {
     // Níveis
     //level *cur_level;
     //level *levels[];
-    //environment *envs[];
+    int n_envs;
+    env **envs;
+    spriteProvider *sprites;
 } game;
 
 game *game_create(/*level *first, level **levels*/);
