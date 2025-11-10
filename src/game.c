@@ -19,6 +19,8 @@ game *game_create()
     al_install_keyboard();
     al_init_image_addon();
 
+    al_set_new_bitmap_flags(ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR);
+
     g->timer = al_create_timer(1.0 / FPS);
     g->queue = al_create_event_queue();
     g->font = al_create_builtin_font();
@@ -31,7 +33,7 @@ game *game_create()
     // Ambientes
 
     g->n_envs = 3;
-    g->envs = malloc(sizeof(char *) * g->n_envs);
+    g->envs = malloc(sizeof(env *) * g->n_envs);
 
     g->envs[PROCESS_ENV] = processEnv_create();
     g->envs[ASYNC_PROCESS_ENV] = processEnv_create();
@@ -41,22 +43,27 @@ game *game_create()
 
     g->sprites = spriteProvider_create();
 
+    // Input
+
+    memset(g->keys, 0, sizeof(g->keys));
+
     return g;
 }
 
 int game_destroy(game *g)
 {
+    
+    g->envs[PROCESS_ENV]->destroy(g->envs[PROCESS_ENV]);
+    g->envs[ASYNC_PROCESS_ENV]->destroy(g->envs[ASYNC_PROCESS_ENV]);
+    g->envs[RENDER_ENV]->destroy(g->envs[RENDER_ENV]);
+    
+    spriteProvider_destroy(g->sprites);
+    
     al_destroy_font(g->font);
 	al_destroy_display(g->display);
 	al_destroy_timer(g->timer);
 	al_destroy_event_queue(g->queue);
-
-    g->envs[PROCESS_ENV]->destroy(g->envs[PROCESS_ENV]);
-    g->envs[ASYNC_PROCESS_ENV]->destroy(g->envs[ASYNC_PROCESS_ENV]);
-    g->envs[RENDER_ENV]->destroy(g->envs[RENDER_ENV]);
-
-    spriteProvider_destroy(g->sprites);
-
+    
     free(g);
 
     return 0;
@@ -72,8 +79,6 @@ int game_process(game *g)
     while (1) {
         al_wait_for_event(g->queue, &event);
 
-        bool done = false;
-
         g->envs[ASYNC_PROCESS_ENV]->compute(g->envs[ASYNC_PROCESS_ENV]);
 
         switch(event.type) {
@@ -85,18 +90,24 @@ int game_process(game *g)
                 al_clear_to_color(al_map_rgb(0, 0, 0));
                 g->envs[RENDER_ENV]->compute(g->envs[RENDER_ENV]);
                 al_flip_display();
+
+                for(int i = 0; i < ALLEGRO_KEY_MAX; i++)
+                    g->keys[i] &= ~KEY_SEEN;
                 
                 break;
 
-            case ALLEGRO_EVENT_DISPLAY_CLOSE: 
-                done = true;
+            case ALLEGRO_EVENT_KEY_DOWN:
+                g->keys[event.keyboard.keycode] = KEY_SEEN | KEY_DOWN;
                 break;
-        }
+            
+            case ALLEGRO_EVENT_KEY_UP:
+                g->keys[event.keyboard.keycode] &= ~KEY_DOWN;
+                break;
 
-        if (done)
-            break;
+            case ALLEGRO_EVENT_DISPLAY_CLOSE: 
+                return 0;
+        }
     }
 
-    return 0;
-
+    return 1;
 }

@@ -17,6 +17,6 @@ typedef struct spriteProvider {
 spriteProvider *spriteProvider_create();
 spriteProvider *spriteProvider_destroy(spriteProvider *sp);
 
-ALLEGRO_BITMAP *spriteProvider_get(spriteProvider *sp, char *path);
+ALLEGRO_BITMAP *spriteProvider_get(spriteProvider *sp, const char *path);
 
 #endif

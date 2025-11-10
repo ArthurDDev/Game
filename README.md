@@ -7,6 +7,7 @@
 - [X] Entidades
 - [X] Renderização de entidades
 - [X] Lógica em entidades
+- [ ] Input
 - [ ] Colisões
 - [ ] Mapas
 - [ ] Níveis

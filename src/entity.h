@@ -6,6 +6,7 @@
 
 typedef struct entity {
     vec pos;
+    void *data;
     ALLEGRO_BITMAP *sprite;
 } entity;
 

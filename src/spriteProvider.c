@@ -28,31 +28,36 @@ spriteProvider *spriteProvider_destroy(spriteProvider *sp)
     return NULL;
 }
 
-ALLEGRO_BITMAP *spriteProvider_get(spriteProvider *sp, char *path)
+ALLEGRO_BITMAP *spriteProvider_get(spriteProvider *sp, const char *path)
 {
     struct spriteNode *n = sp->head;
 
+
     while (n) {
-        if (strcmp(n->path, path)) {
+        if (!strcmp(n->path, path)) {
             n->count ++;
             return n->bitmap;
         }
         
         n = n->prox;
     }
-
+    
     ALLEGRO_BITMAP *bitmap = al_load_bitmap(path);
     if (!bitmap) {
         fprintf(stderr, "Erro ao carregar sprite %s\n", path);
         return NULL;
     }
 
+
+
     n = malloc(sizeof(struct spriteNode));
-    n->path = path;
+    n->path = strdup(path);
     n->bitmap = bitmap;
     n->count = 1;
     n->prox = sp->head;
     sp->head = n;
+
+
 
     return bitmap;
 }
