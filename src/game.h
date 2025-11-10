@@ -5,8 +5,8 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_primitives.h>
 
-#include "env.h"
-#include "spriteProvider.h"
+typedef struct env env;
+typedef struct spriteProvider spriteProvider;
 
 #define FPS 30.0
 
@@ -15,6 +15,7 @@
 
 #define C_BLACK al_map_rgb(0, 0, 0)
 #define C_WHITE al_map_rgb(255, 255, 255)
+#define C_RED al_map_rgb(255, 0, 0)
 
 #define PROCESS_ENV 0
 #define ASYNC_PROCESS_ENV 1
@@ -23,7 +24,8 @@
 #define KEY_SEEN 1
 #define KEY_DOWN 2
 
-typedef struct game {
+typedef struct game game;
+struct game {
     // Configuração do Allegro
     ALLEGRO_TIMER* timer;
 	ALLEGRO_EVENT_QUEUE* queue;
@@ -37,7 +39,7 @@ typedef struct game {
     int n_envs;
     env **envs;
     spriteProvider *sprites;
-} game;
+};
 
 game *game_create(/*level *first, level **levels*/);
 int game_destroy(game *g);

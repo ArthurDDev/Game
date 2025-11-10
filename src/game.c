@@ -1,3 +1,5 @@
+#include "game.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -6,8 +8,8 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_image.h>
 
-#include "game.h"
 #include "env.h"
+#include "spriteProvider.h"
 
 game *game_create()
 {
@@ -18,6 +20,7 @@ game *game_create()
     al_init();
     al_install_keyboard();
     al_init_image_addon();
+    al_init_primitives_addon();
 
     al_set_new_bitmap_flags(ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR);
 

@@ -1,9 +1,8 @@
-#ifndef __COLLISION
-#define __COLLISION
-
 #include "collision.h"
 
-void hitbox_attatch(entity *e, bool w, bool h, char flags)
+#include "entity.h"
+
+void hitbox_attatch(entity *e, double w, double h, char flags)
 {
     hitbox *hb = malloc(sizeof(hitbox));
 
@@ -21,17 +20,19 @@ char collides(entity *a, entity *b)
     if (!a || !b || !a->hitbox || !b->hitbox)
         return 0;
 
-    hitbox hba = a->hitbox;
-    hitbox hbb = b->hitbox;
+    vec posA1 = vec_add(a->hitbox->offset, a->pos);
+    vec posA2 = vec_add(vec_add(a->hitbox->offset, a->pos), a->hitbox->size);
 
-    double ax1 = hba->offset->x1
+    vec posB1 = vec_add(b->hitbox->offset, b->pos);
+    vec posB2 = vec_add(vec_add(b->hitbox->offset, b->pos), b->hitbox->size);
+    if ((posB1.x < posA2.x && posB2.x > posA1.x &&
+        posB1.y < posA2.y && posB2.y > posA1.y))
+        return 1;
 
-    if ()
+    return 0;
 }
 
 char collides_any(entity *e, env *env)
 {
     return 0;
 }
-
-#endif

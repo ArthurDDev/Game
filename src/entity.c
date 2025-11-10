@@ -1,6 +1,8 @@
 #include "entity.h"
+
+#include <stdlib.h>
+
 #include "vec.h"
-#include "stdlib.h"
 
 entity *entity_create(vec pos)
 {

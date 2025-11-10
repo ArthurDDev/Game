@@ -10,9 +10,10 @@ struct spriteNode {
     ALLEGRO_BITMAP *bitmap;
 };
 
-typedef struct spriteProvider {
+typedef struct spriteProvider spriteProvider;
+struct spriteProvider {
     struct spriteNode *head;
-} spriteProvider;
+};
 
 spriteProvider *spriteProvider_create();
 spriteProvider *spriteProvider_destroy(spriteProvider *sp);

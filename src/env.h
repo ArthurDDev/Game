@@ -1,9 +1,10 @@
 #ifndef __ENV
 #define __ENV
 
-#include "entity.h"
+typedef struct entity entity;
 
-typedef struct env {
+typedef struct env env;
+struct env {
     void *entities;
 
     struct env *(*destroy) (struct env *e);
@@ -12,7 +13,7 @@ typedef struct env {
     int (*unsubscribe) (entity *e, struct env *target);
 
     int (*compute) (struct env *e);
-} env;
+};
 
 env *processEnv_create();
 

@@ -1,10 +1,11 @@
 #ifndef __VEC
 #define __VEC
 
-typedef struct vec {
+typedef struct vec vec;
+struct vec {
     double x;
     double y;
-} vec;
+};
 
 vec vec_create(double x, double y);
 

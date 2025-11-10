@@ -1,7 +1,8 @@
+#include "env.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "env.h"
 #include "entity.h"
 
 /**
