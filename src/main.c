@@ -10,19 +10,35 @@
 #include "spriteProvider.h"
 #include "env.h"
 #include "tilemap.h"
+#include "camera.h"
 
 game *G;
+int cameraID;
 
 int soil_render(entity *e)
 {
-	al_draw_filled_rectangle(e->pos.x, e->pos.y, e->pos.x + e->hitbox->size.x, e->pos.y + e->hitbox->size.y, C_WHITE);
+	vec newPos = position_to_camera(G, cameraID, e->pos);
+	al_draw_filled_rectangle(newPos.x, newPos.y, newPos.x + e->hitbox->size.x, newPos.y + e->hitbox->size.y, C_WHITE);
 }
 
+int camera_process(entity *e)
+{
+	if (G->keys[ALLEGRO_KEY_RIGHT])
+		e->pos.x += 10.0;
+	if (G->keys[ALLEGRO_KEY_LEFT])
+		e->pos.x -= 10.0;
+	if (G->keys[ALLEGRO_KEY_UP])
+		e->pos.y -= 10.0;
+	if (G->keys[ALLEGRO_KEY_DOWN])
+		e->pos.y += 10.0;
+}
 
 int player_render(entity *e)
 {
-	al_draw_bitmap(e->sprite, e->pos.x, e->pos.y, 0);
-	al_draw_filled_rectangle(e->pos.x, e->pos.y, e->pos.x + e->hitbox->size.x, e->pos.y + e->hitbox->size.y, C_RED);
+	vec newPos = position_to_camera(G, cameraID, e->pos);
+
+	camera_render(G, cameraID, e->pos, e->sprite);
+	al_draw_filled_rectangle(newPos.x, newPos.y, newPos.x + e->hitbox->size.x, newPos.y + e->hitbox->size.y, C_RED);
 }
 
 struct playerData {
@@ -64,7 +80,11 @@ int player_process(entity *e)
 int main()
 {	
 	G = game_create();
+	
 	int collision_env = insert_env(G, processEnv_create(G->n_envs));
+	cameraID = camera_create(G);
+	entity *camera = G->envs[MASTER_ENV]->get(cameraID, G->envs[MASTER_ENV]);
+	subscribe(G->envs[PROCESS_ENV], camera, camera_process);
 
 	entity *player = entity_create(G);
 	player->pos = vec_create(100.0, 100.0);
@@ -77,6 +97,7 @@ int main()
 	
 	subscribe(G->envs[PROCESS_ENV], player, player_process);
 	subscribe(G->envs[RENDER_ENV], player, player_render);
+
 
 	const char *map_data[] = {
 		"11111111111111111111",
@@ -96,7 +117,7 @@ int main()
 		"11111111111111111111",
 	};
 
-	tilemap_load(G, map_data, 32, 15, 20, collision_env, RENDER_ENV, soil_render);
+	tilemap_load(G, map_data, 64, 15, 20, collision_env, RENDER_ENV, soil_render);
 
 	if (game_process(G))
 		return 1;

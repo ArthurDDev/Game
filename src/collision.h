@@ -23,7 +23,7 @@ void hitbox_attatch(entity *e, double w, double h, char flags);
 // Retorna uma flag se ocorre colisão ou não
 char collides(entity *a, entity *b);
 
-// Retorna uma flag se colide com qualquer objeto ou não
-char collides_env(entity *e, env *env);
+// Retorna a entidade que colidiu ou NULL
+entity *collides_env(entity *e, env *env);
 
 #endif

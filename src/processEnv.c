@@ -108,7 +108,14 @@ env *env_destroy (struct env *e)
 
 entity *env_get (int id, struct env *target)
 {
-    // TODO terminar essa parte seu animal eu sei que vc vai esquecer e dar seg fault
+    struct nodo_t *n = ((struct list_t *)target->entities)->head;
+
+    while (n) {
+        if (n->entity->id == id)
+            return n->entity;
+        
+        n = n->prox;
+    }
 
     return NULL;
 }

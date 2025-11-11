@@ -44,16 +44,16 @@ struct list_t {
     int tam;
 };
 
-char collides_env(entity *e, env *env)
+entity *collides_env(entity *e, env *env)
 {
     struct nodo_t *n = ((struct list_t *)env->entities)->head;
 
     while (n) {
         if (collides(e, n->entity))
-            return 1;
+            return n->entity;
 
         n = n->prox;
     }
 
-    return 0;
+    return NULL;
 }
