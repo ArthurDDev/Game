@@ -11,6 +11,7 @@ typedef struct env env;
 
 typedef struct entity entity;
 struct entity {
+    int id;
     vec pos;
     hitbox *hitbox;
     void *data;

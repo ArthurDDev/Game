@@ -12,7 +12,7 @@ struct env {
 
     int (*subscribe) (entity *e, struct env *target, int (*processFunc) (entity *e));
     int (*unsubscribe) (entity *e, struct env *target);
-
+    entity *(*get) (int id, struct env *target);
     int (*compute) (struct env *e);
 };
 

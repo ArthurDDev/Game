@@ -24,7 +24,7 @@ entity *entity_create(game *G)
     e->envs[0] = G->envs[MASTER_ENV];
     e->n_envs = 1;
 
-    G->envs[MASTER_ENV]->subscribe(e, G->envs[MASTER_ENV], destroy_entity);
+    e->id = G->envs[MASTER_ENV]->subscribe(e, G->envs[MASTER_ENV], destroy_entity);
 
     return e;
 }

@@ -106,6 +106,13 @@ env *env_destroy (struct env *e)
     return NULL;
 }
 
+entity *env_get (int id, struct env *target)
+{
+    // TODO terminar essa parte seu animal eu sei que vc vai esquecer e dar seg fault
+
+    return NULL;
+}
+
 env *processEnv_create(int id)
 {
     struct env *e = malloc(sizeof(env));
@@ -119,6 +126,7 @@ env *processEnv_create(int id)
     e->subscribe = env_subscribe;
     e->unsubscribe = env_unsubscribe;
     e->compute = env_compute;
+    e->get = env_get;
 
     e->entities = l;
     
