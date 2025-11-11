@@ -30,6 +30,8 @@ int env_compute (struct env *e, game *g)
     struct nodo_t *n = ((struct list_t *)e->entities)->head;
 
     while (n) {
+        if (!g->can_process)
+            return 1;
         n->processFunc(n->entity, g);
         n = n->prox;
     }
@@ -74,7 +76,7 @@ int env_unsubscribe (entity *e, struct env *target)
         n = n->prox;
     }
 
-    if (!n || n->entity == e)
+    if (!n || n->entity != e)
         return -1;
 
     if (n_ant)
@@ -101,9 +103,10 @@ env *env_destroy (struct env *e)
         n = n_aux;
     }
 
+    
     free(e->entities);
     free(e);
-
+    
     return NULL;
 }
 

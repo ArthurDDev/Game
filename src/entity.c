@@ -38,33 +38,42 @@ entity *entity_create(game *G)
 
 entity *entity_destroy(entity *e)
 {
-    if (e->data)
+    if (!e)
+        return NULL;
+    
+    if (e->data != NULL)
         free(e->data);
- 
-    if (e->hitbox)
+
+    if (e->hitbox != NULL)
         free(e->hitbox);
 
-    for (size_t i = 0; i < e->n_envs; i++) {
-        if (e->envs[i]->id != MASTER_ENV)
-            e->envs[i]->unsubscribe(e, e->envs[i]);
+    for (size_t i = 1; i < e->n_envs; i++) {
+        e->envs[i]->unsubscribe(e, e->envs[i]);
     }
-    free(e->envs);
-
+    if (e->envs != NULL)
+        free(e->envs);
+    
     free(e);
+
+    return NULL;
 }
 
 entity *entity_destroy_level(entity *e)
 {
+    if (!e)
+        return NULL;
+    
     if (e->data)
         free(e->data);
  
     if (e->hitbox)
         free(e->hitbox);
 
-    for (size_t i = 0; i < e->n_envs; i++) {
-        if (e->envs[i]->id != LEVEL_ENV)
-            e->envs[i]->unsubscribe(e, e->envs[i]);
+    e->envs[MASTER_ENV]->unsubscribe(e, e->envs[MASTER_ENV]);
+    for (size_t i = 2; i < e->n_envs; i++) {
+        e->envs[i]->unsubscribe(e, e->envs[i]);
     }
+
     free(e->envs);
 
     free(e);

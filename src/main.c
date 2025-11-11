@@ -82,13 +82,17 @@ int player_render(entity *e, game *g)
 	al_draw_filled_rectangle(newPos.x, newPos.y, newPos.x + e->hitbox->size.x, newPos.y + e->hitbox->size.y, C_RED);
 
 	if (g->keys[ALLEGRO_KEY_V]) {
-		level_change(g, 1);
-		printf("MUDANDO DE NIVEL\n");
+		g->keys[ALLEGRO_KEY_V] = 0;
+		level_change(g, 0);
+		return 0;
 	}
+
+	return 0;
 }
 
 int load1(game *g)
 {
+	/*
 	int cameraID = camera_create(g);
 
 	entity *player = entity_create(g);
@@ -98,6 +102,7 @@ int load1(game *g)
 	hitbox_attatch(player, 32.0, 32.0, 0);
 
 	return 0;
+*/
 }
 
 int unload1(game *g)
@@ -107,14 +112,15 @@ int unload1(game *g)
 
 int load2(game *g)
 {
-	int cameraID = camera_create(g);
 
+	int cameraID = camera_create(g);
+	
 	entity *player = entity_create(g);
 	subscribe(g->envs[RENDER_ENV], player, player_render);
 	player->pos = vec_create(200.0, 200.0);
 	player->sprite = spriteProvider_get(g->sprites, "assets/mysha.png");
 	hitbox_attatch(player, 32.0, 32.0, 0);
-
+	
 	return 0;
 }
 
@@ -130,7 +136,7 @@ int main()
 
 	level *levels[] = {l1, l2};
 
-	game *G = game_create(1, 0, levels);
+	game *G = game_create(2, 1, levels);
 
 	/*
 	

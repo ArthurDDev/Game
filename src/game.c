@@ -59,6 +59,7 @@ game *game_create(size_t n_levels, int first, level **levels)
     g->levels = malloc(sizeof(levels) * n_levels);
     g->levels = levels;
     g->cur_level = g->levels[first];
+    g->can_process = 1;
 
     g->cur_level->load(g);
 
@@ -69,9 +70,9 @@ int game_destroy(game *g)
 {
     g->envs[MASTER_ENV]->compute(g->envs[MASTER_ENV], g);
     
-    for (int i = 0; i < g->n_envs; i++) {
-        g->envs[i]->destroy(g->envs[i]);
-    }
+    //for (int i = 0; i < g->n_envs; i++) {
+    //    g->envs[i]->destroy(g->envs[i]);
+    //}
 
     spriteProvider_destroy(g->sprites);
     
@@ -93,6 +94,7 @@ int game_process(game *g)
     al_start_timer(g->timer);
 
     while (1) {
+        g->can_process = 1;
         al_wait_for_event(g->queue, &event);
 
         g->envs[ASYNC_PROCESS_ENV]->compute(g->envs[ASYNC_PROCESS_ENV], g);
@@ -100,7 +102,6 @@ int game_process(game *g)
         switch(event.type) {
 
             case ALLEGRO_EVENT_TIMER:
-
                 g->envs[PROCESS_ENV]->compute(g->envs[PROCESS_ENV], g);
             
                 al_clear_to_color(al_map_rgb(0, 0, 0));

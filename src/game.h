@@ -56,6 +56,7 @@ struct game {
     level *cur_level;
     size_t n_levels;
     level **levels;
+    char can_process;
 };
 
 game *game_create(size_t n_levels, int first, level **levels);
