@@ -1,13 +1,13 @@
 #ifndef __ENTITY
 #define __ENTITY
 
-#include <allegro5/allegro5.h>
-
 typedef struct hitbox hitbox;
 typedef struct game game;
 typedef struct env env;
+typedef struct sprite sprite;
 
 #include "vec.h"
+#include <stdlib.h>
 
 typedef struct entity entity;
 struct entity {
@@ -15,7 +15,7 @@ struct entity {
     vec pos;
     hitbox *hitbox;
     void *data;
-    ALLEGRO_BITMAP *sprite;
+    sprite *sprite;
     env **envs;
     size_t n_envs;
 };

@@ -1,5 +1,7 @@
 #include "collision.h"
 
+#include <stdlib.h>
+
 #include "entity.h"
 #include "env.h"
 

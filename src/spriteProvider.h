@@ -1,5 +1,5 @@
-#ifndef __SPRITE
-#define __SPRITE
+#ifndef __SPRITEPROVIDER
+#define __SPRITEPROVIDER
 
 #include <allegro5/allegro.h>
 

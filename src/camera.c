@@ -6,6 +6,7 @@
 #include "vec.h"
 #include "game.h"
 #include "env.h"
+#include "sprite.h"
 
 int camera_create(game *G)
 {
@@ -24,8 +25,8 @@ vec position_to_camera(game *G, vec pos)
     return vec_sub(pos, camera->pos);
 }
 
-void camera_render(game *G, vec pos, ALLEGRO_BITMAP *bmp)
+void camera_render(game *G, vec pos, sprite *spr, double scale_x, double scale_y)
 {
     vec newPos = position_to_camera(G, pos);
-    al_draw_bitmap(bmp, newPos.x, newPos.y, 0);
+    render_sprite(spr, newPos.x, newPos.y, scale_x, scale_y);
 }

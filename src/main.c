@@ -12,6 +12,7 @@
 #include "tilemap.h"
 #include "camera.h"
 #include "level.h"
+#include "sprite.h"
 
 /*
 game *G;
@@ -78,8 +79,8 @@ int player_render(entity *e, game *g)
 {
 	vec newPos = position_to_camera(g, e->pos);
 
-	camera_render(g, e->pos, e->sprite);
 	al_draw_filled_rectangle(newPos.x, newPos.y, newPos.x + e->hitbox->size.x, newPos.y + e->hitbox->size.y, C_RED);
+	camera_render(g, e->pos, e->sprite, 3.0, 3.0);
 
 	if (g->keys[ALLEGRO_KEY_V]) {
 		g->keys[ALLEGRO_KEY_V] = 0;
@@ -118,7 +119,12 @@ int load2(game *g)
 	entity *player = entity_create(g);
 	subscribe(g->envs[RENDER_ENV], player, player_render);
 	player->pos = vec_create(200.0, 200.0);
-	player->sprite = spriteProvider_get(g->sprites, "assets/mysha.png");
+	player->sprite = sprite_create(g, 4, vec_create(32.0, 32.0), (const char *[]){
+		"assets/characters/sprite_0.png",
+		"assets/characters/sprite_1.png",
+		"assets/characters/sprite_2.png",
+		"assets/characters/sprite_3.png"
+	}, 0);
 	hitbox_attatch(player, 32.0, 32.0, 0);
 	
 	return 0;

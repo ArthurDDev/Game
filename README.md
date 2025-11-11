@@ -11,11 +11,13 @@
 - [X] Colisões
 - [X] Mapas
 - [X] Camera
-- [ ] Níveis
-- [ ] Sprites
-- [ ] Animações
+- [X] Níveis
+- [X] Sprites
+- [X] Animações
+- [ ] Origem e escala nos sprites
+- [ ] Organização de arquivos
 - [ ] UI
-- [X] Ambientes ?
+- [X] Ambientes
 
 ### Jogo
 
