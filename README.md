@@ -8,8 +8,9 @@
 - [X] Renderização de entidades
 - [X] Lógica em entidades
 - [X] Input
-- [ ] Colisões
-- [ ] Mapas
+- [X] Colisões
+- [X] Mapas
+- [ ] Camera
 - [ ] Níveis
 - [ ] Sprites
 - [ ] Animações

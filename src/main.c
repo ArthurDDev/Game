@@ -9,6 +9,7 @@
 #include "game.h"
 #include "spriteProvider.h"
 #include "env.h"
+#include "tilemap.h"
 
 game *G;
 
@@ -77,17 +78,25 @@ int main()
 	subscribe(G->envs[PROCESS_ENV], player, player_process);
 	subscribe(G->envs[RENDER_ENV], player, player_render);
 
-	entity *soil = entity_create(G);
-	soil->pos = vec_create(0.0, 400.0);
-	hitbox_attatch(soil, WW, 100.0, 0);
-	subscribe(G->envs[RENDER_ENV], soil, soil_render);
-	subscribe(G->envs[collision_env], soil, NULL);
+	const char *map_data[] = {
+		"11111111111111111111",
+		"10000000000000000001",
+		"10000000000000000001",
+		"10000000000000000001",
+		"10000000000000000001",
+		"10000000000000000001",
+		"10000000000000000001",
+		"10000000000000000001",
+		"10000000000000000001",
+		"10000000000001111001",
+		"10000000000000000001",
+		"10000000000000000001",
+		"10000000000000000001",
+		"10000000000000000001",
+		"11111111111111111111",
+	};
 
-	soil = entity_create(G);
-	soil->pos = vec_create(300.0, 300.0);
-	hitbox_attatch(soil, 400.0, 50.0, 0);
-	subscribe(G->envs[RENDER_ENV], soil, soil_render);
-	subscribe(G->envs[collision_env], soil, NULL);
+	tilemap_load(G, map_data, 32, 15, 20, collision_env, RENDER_ENV, soil_render);
 
 	if (game_process(G))
 		return 1;
