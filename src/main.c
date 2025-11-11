@@ -14,7 +14,7 @@
 #include "level.h"
 #include "sprite.h"
 
-
+/*
 
 int soil_render(entity *e, game *G)
 {
@@ -127,7 +127,7 @@ int load1(game *g)
 	hitbox_attatch(player, 32.0, 32.0, 0);
 
 	return 0;
-*/
+
 	return 0;
 }
 
@@ -138,7 +138,8 @@ int unload1(game *g)
 
 	return 0;
 }
-
+*/
+/*
 int load2(game *g)
 {
 	camera_create(g);
@@ -203,16 +204,17 @@ int unload2(game *g)
 
 	return 0;
 }
+*/
+
+#include "menu.h"
 
 int main()
 {	
-	level *l1 = level_create(load1, unload1);
-	level *l2 = level_create(load2, unload2);
+	level *menu = level_create(load_menu, unload_menu);
 
-	level *levels[] = {l1, l2};
+	level *levels[] = {menu};
 
-	game *G = game_create(2, 1, levels);
-
+	game *G = game_create(1, 0, levels);
 	/*
 	
 

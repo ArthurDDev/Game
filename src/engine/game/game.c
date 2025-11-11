@@ -84,6 +84,8 @@ int game_destroy(game *g)
     
     free(g);
 
+    exit(0);
+
     return 0;
 }
 
