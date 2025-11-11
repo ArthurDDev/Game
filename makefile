@@ -1,23 +1,33 @@
-TARGET = game
-SOURCES = src/*.c
-ALLEGRO_FLAGS = $(shell pkg-config allegro-5 allegro_main-5 allegro_font-5 allegro_primitives-5 allegro_image-5 --libs --cflags)
+CC := gcc
+CFLAGS := -Wall -Wextra
+LDFLAGS := $(shell pkg-config --libs allegro-5 allegro_main-5 allegro_font-5 allegro_ttf-5 allegro_primitives-5 allegro_image-5)
+CFLAGS += $(shell pkg-config --cflags allegro-5 allegro_font-5 allegro_ttf-5 allegro_primitives-5 allegro_image-5)
 
-all:
-	gcc $(SOURCES) -o $(TARGET) $(ALLEGRO_FLAGS)
+SRC_DIR := src
+BUILD_DIR := build
+TARGET := game
 
-play:
-	rm -rf ./build
-	mkdir ./build/
-	gcc $(SOURCES) -o ./build/$(TARGET) $(ALLEGRO_FLAGS)
-	./build/$(TARGET)
-	rm -rf ./build
+SRC := $(shell find $(SRC_DIR) -name '*.c')
+OBJ := $(SRC:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
 
-valgrind:
-	rm -rf ./build
-	mkdir ./build/
-	gcc $(SOURCES) -o ./build/$(TARGET) $(ALLEGRO_FLAGS)
-	valgrind ./build/$(TARGET)
-	rm -rf ./build
+INC_DIRS := $(shell find $(SRC_DIR) -type d)
+CFLAGS += $(addprefix -I, $(INC_DIRS))
+
+$(TARGET): $(OBJ)
+	@echo "Linking $@"
+	$(CC) $(OBJ) -o $@ $(LDFLAGS)
+
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(dir $@)
+	@echo "Compiling $<"
+	$(CC) $(CFLAGS) -c $< -o $@
+
+
+
+.PHONY: clean run
+
+run: $(TARGET)
+	./$(TARGET)
 
 clean:
-	rm $(TARGET) ./*.o
+	rm -rf $(BUILD_DIR) $(TARGET)

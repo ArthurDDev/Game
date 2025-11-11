@@ -23,6 +23,8 @@ sprite *render_sprite(sprite *s, double x, double y, double scale_x, double scal
         s->size.x * scale_x, s->size.y * scale_y,
         0
     );
+
+    return s;
 }
 
 sprite *sprite_create(game *g, size_t n_images, vec size, const char **image_paths, char flags)
@@ -57,6 +59,7 @@ sprite *sprite_create(game *g, size_t n_images, vec size, const char **image_pat
     s->current_frame = 0;
     s->timer = 0;
     s->images = images;
+    
     return s;
 }
 

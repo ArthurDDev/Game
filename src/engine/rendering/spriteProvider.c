@@ -2,6 +2,8 @@
 
 #include <allegro5/allegro.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 spriteProvider *spriteProvider_create()
 {

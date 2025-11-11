@@ -94,6 +94,9 @@ int player_render(entity *e, game *g)
 
 int load1(game *g)
 {
+	if (!g)
+		return 1;
+
 	/*
 	int cameraID = camera_create(g);
 
@@ -105,17 +108,20 @@ int load1(game *g)
 
 	return 0;
 */
+	return 0;
 }
 
 int unload1(game *g)
 {
-	return 1;
+	if (!g)
+		return 1;
+
+	return 0;
 }
 
 int load2(game *g)
 {
-
-	int cameraID = camera_create(g);
+	camera_create(g);
 	
 	entity *player = entity_create(g);
 	subscribe(g->envs[RENDER_ENV], player, player_render);
@@ -133,7 +139,10 @@ int load2(game *g)
 
 int unload2(game *g)
 {
-	return 1;
+	if (!g)
+		return 1;
+
+	return 0;
 }
 
 int main()

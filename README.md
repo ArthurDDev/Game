@@ -16,7 +16,6 @@
 - [X] Animações
 - [X] Origem e escala nos sprites
 - [ ] Organização de arquivos
-- [ ] UI
 - [X] Ambientes
 
 ### Jogo

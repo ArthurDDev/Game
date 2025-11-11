@@ -10,12 +10,18 @@
 
 int destroy_entity(entity *e, game *g)
 {
+    if (!g)
+        return 1;
+    
     entity_destroy(e);
     return 0;
 }
 
 int destroy_entity_level(entity *e, game *g)
 {
+    if (!g)
+        return 1;
+
     entity_destroy_level(e);
     return 0;
 }
@@ -81,6 +87,8 @@ entity *entity_destroy_level(entity *e)
     free(e->envs);
 
     free(e);
+
+    return NULL;
 }
 
 int subscribe(struct env *environment, entity *e, int (*process)(entity *, game *))
