@@ -23,6 +23,7 @@ game *game_create(size_t n_levels, int first, level **levels)
     al_init_image_addon();
     al_init_primitives_addon();
 
+    al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_INVERSE_ALPHA);
     al_set_new_bitmap_flags(ALLEGRO_MIN_LINEAR);
 
     g->timer = al_create_timer(1.0 / FPS);

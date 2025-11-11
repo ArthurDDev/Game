@@ -9,7 +9,18 @@ void hitbox_attatch(entity *e, double w, double h, char flags)
 {
     hitbox *hb = malloc(sizeof(hitbox));
 
-    hb->offset = vec_create(0.0, 0.0);    
+    hb->offset = vec_create(w/2.0, h/2.0);
+
+    if (flags & HB_LEFT)
+        hb->offset.x = 0;
+    else if (flags & HB_RIGHT)
+        hb->offset.x = w;
+
+    if (flags & HB_TOP)
+        hb->offset.y = 0;
+    else if (flags & HB_BOTTOM)
+        hb->offset.y = h;
+
     hb->size = vec_create(w, h);
 
     if (e->hitbox)

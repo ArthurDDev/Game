@@ -14,7 +14,7 @@
 - [X] Níveis
 - [X] Sprites
 - [X] Animações
-- [ ] Origem e escala nos sprites
+- [X] Origem e escala nos sprites
 - [ ] Organização de arquivos
 - [ ] UI
 - [X] Ambientes

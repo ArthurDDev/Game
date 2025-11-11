@@ -78,9 +78,10 @@ int player_process(entity *e)
 int player_render(entity *e, game *g)
 {
 	vec newPos = position_to_camera(g, e->pos);
+	newPos = vec_sub(newPos, e->hitbox->offset);
 
-	al_draw_filled_rectangle(newPos.x, newPos.y, newPos.x + e->hitbox->size.x, newPos.y + e->hitbox->size.y, C_RED);
 	camera_render(g, e->pos, e->sprite, 3.0, 3.0);
+	al_draw_filled_rectangle(newPos.x, newPos.y, newPos.x + e->hitbox->size.x, newPos.y + e->hitbox->size.y, al_map_rgba(255, 0, 0, 0.01));
 
 	if (g->keys[ALLEGRO_KEY_V]) {
 		g->keys[ALLEGRO_KEY_V] = 0;
@@ -124,8 +125,8 @@ int load2(game *g)
 		"assets/characters/sprite_1.png",
 		"assets/characters/sprite_2.png",
 		"assets/characters/sprite_3.png"
-	}, 0);
-	hitbox_attatch(player, 32.0, 32.0, 0);
+	}, SPR_BOTTOM);
+	hitbox_attatch(player, 32.0, 48.0, HB_BOTTOM);
 	
 	return 0;
 }

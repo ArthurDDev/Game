@@ -1,6 +1,11 @@
 #ifndef __SPRITE
 #define __SPRITE
 
+#define SPR_LEFT 1
+#define SPR_RIGHT 2
+#define SPR_TOP 4
+#define SPR_BOTTOM 8
+
 #include "vec.h"
 #include <allegro5/allegro5.h>
 

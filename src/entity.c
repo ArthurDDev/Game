@@ -6,6 +6,7 @@
 #include "game.h"
 #include "env.h"
 #include "entity.h"
+#include "sprite.h"
 
 int destroy_entity(entity *e, game *g)
 {
@@ -41,6 +42,9 @@ entity *entity_destroy(entity *e)
     if (!e)
         return NULL;
     
+    if (!e->sprite)
+        sprite_destroy(e->sprite);
+
     if (e->data != NULL)
         free(e->data);
 

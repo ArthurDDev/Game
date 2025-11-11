@@ -1,6 +1,7 @@
 #include "sprite.h"
 
 #include <allegro5/allegro.h>
+#include <stdio.h>
 
 #include "vec.h"
 #include "game.h"
@@ -14,12 +15,11 @@ sprite *render_sprite(sprite *s, double x, double y, double scale_x, double scal
         s->timer = 0;
     }
    
-
     al_draw_scaled_bitmap(
         s->images[s->current_frame],
-        s->origin.x, s->origin.y,
+        0, 0,
         s->size.x, s->size.y,
-        x, y,
+        x - (s->origin.x * scale_x), y - (s->origin.y * scale_y),
         s->size.x * scale_x, s->size.y * scale_y,
         0
     );
@@ -40,8 +40,17 @@ sprite *sprite_create(game *g, size_t n_images, vec size, const char **image_pat
 
     sprite *s = malloc(sizeof(sprite));
 
-    // Mudar depois para suportar varias origens diferentes
-    s->origin = vec_create(0.0, 0.0);
+    s->origin = vec_create(size.x / 2.0,size.y / 2.0);
+    if (flags & SPR_LEFT)
+        s->origin.x = 0;
+    else if (flags & SPR_RIGHT)
+        s->origin.x = size.x;
+
+    if (flags & SPR_TOP)
+        s->origin.y = 0;
+    else if (flags & SPR_BOTTOM)
+        s->origin.y = size.y;
+    
     s->size = size;
     s->delay = 5;
     s->n_images = n_images;
