@@ -3,16 +3,53 @@
 
 #include "entity.h"
 #include "collision.h"
+#include "sprite.h"
 
 void tilemap_load(game *G, const char **data, int tilesize, int n_rows, int n_cols, int collision_env, int render_env, int (*renderFunc)(entity *e, game *g))
 {
+    const char *tile_data[] = {
+        "assets/sheet/tile_11.png",
+        "assets/sheet/tile_01.png",
+        "assets/sheet/tile_10.png",
+        "assets/sheet/tile_08.png",
+        "assets/sheet/tile_11.png",
+        "assets/sheet/tile_00.png",
+        "assets/sheet/tile_11.png",
+        "assets/sheet/tile_00.png",
+        "assets/sheet/tile_12.png",
+        "assets/sheet/tile_09.png",
+        "assets/sheet/tile_11.png",
+        "assets/sheet/tile_00.png",
+        "assets/sheet/tile_11.png",
+        "assets/sheet/tile_00.png",
+        "assets/sheet/tile_11.png",
+        "assets/sheet/tile_00.png",
+    };
+
+    int dir = 0;
+
     for (int i = 0; i < n_rows; i++) {
         for (int j = 0; j < n_cols; j++) {
             switch(data[i][j]) {
                 case '1': {
+
+                    dir = 0;
+
+                    if (i == 0 || data[i-1][j] == '0')
+                        dir += 1; // Top
+                    if (j == 0 || data[i][j-1] == '0')
+                        dir += 2; // Left
+                    if (i == n_rows - 1 || data[i+1][j] == '0')
+                        dir += 4; // Bottom
+                    if (j == n_cols - 1 || data[i][j+1] == '0')
+                        dir += 8; // Right
+
                     entity *soil = entity_create(G);
                     soil->pos = vec_create(j * tilesize, i * tilesize);
-                    hitbox_attatch(soil, tilesize, tilesize, 0);
+                    soil->sprite = sprite_create(G, 1, vec_create((double)tilesize, (double)tilesize), (const char *[]){
+                        tile_data[dir],
+                    }, SPR_TOP | SPR_LEFT);
+                    hitbox_attatch(soil, tilesize, tilesize, HB_TOP | HB_LEFT);
                     subscribe(G->envs[render_env], soil, renderFunc);
                     subscribe(G->envs[collision_env], soil, NULL);
                 } break;

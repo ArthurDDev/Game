@@ -34,11 +34,11 @@ char collides(entity *a, entity *b)
     if (!a || !b || !a->hitbox || !b->hitbox)
         return 0;
 
-    vec posA1 = vec_add(a->hitbox->offset, a->pos);
-    vec posA2 = vec_add(vec_add(a->hitbox->offset, a->pos), a->hitbox->size);
+    vec posA1 = vec_sub(a->pos, a->hitbox->offset);
+    vec posA2 = vec_add(vec_sub(a->pos, a->hitbox->offset), a->hitbox->size);
 
-    vec posB1 = vec_add(b->hitbox->offset, b->pos);
-    vec posB2 = vec_add(vec_add(b->hitbox->offset, b->pos), b->hitbox->size);
+    vec posB1 = vec_sub(b->pos, b->hitbox->offset);
+    vec posB2 = vec_add(vec_sub(b->pos, b->hitbox->offset), b->hitbox->size);
     if ((posB1.x < posA2.x && posB2.x > posA1.x &&
         posB1.y < posA2.y && posB2.y > posA1.y))
         return 1;
