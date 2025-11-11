@@ -23,7 +23,10 @@ struct entity {
 entity *entity_create(game *G);
 entity *entity_destroy(entity *e);
 
+entity *entity_destroy_level(entity *e);
+
+
 // Insere entidade em um ambiente qualquer
-int subscribe(struct env *environment, entity *e, int (*process)(entity *));
+int subscribe(struct env *environment, entity *e, int (*process)(entity *, game *));
 
 #endif

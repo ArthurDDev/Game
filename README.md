@@ -10,7 +10,7 @@
 - [X] Input
 - [X] Colisões
 - [X] Mapas
-- [ ] Camera
+- [X] Camera
 - [ ] Níveis
 - [ ] Sprites
 - [ ] Animações

@@ -11,13 +11,15 @@
 #include "env.h"
 #include "tilemap.h"
 #include "camera.h"
+#include "level.h"
 
+/*
 game *G;
 int cameraID;
 
 int soil_render(entity *e)
 {
-	vec newPos = position_to_camera(G, cameraID, e->pos);
+	vec newPos = position_to_camera(G, e->pos);
 	al_draw_filled_rectangle(newPos.x, newPos.y, newPos.x + e->hitbox->size.x, newPos.y + e->hitbox->size.y, C_WHITE);
 }
 
@@ -33,13 +35,7 @@ int camera_process(entity *e)
 		e->pos.y += 10.0;
 }
 
-int player_render(entity *e)
-{
-	vec newPos = position_to_camera(G, cameraID, e->pos);
 
-	camera_render(G, cameraID, e->pos, e->sprite);
-	al_draw_filled_rectangle(newPos.x, newPos.y, newPos.x + e->hitbox->size.x, newPos.y + e->hitbox->size.y, C_RED);
-}
 
 struct playerData {
 	vec velocity;
@@ -76,10 +72,67 @@ int player_process(entity *e)
 	pdata->velocity = vel;
 	e->pos = vec_add(e->pos, vel);
 }
+*/
+
+int player_render(entity *e, game *g)
+{
+	vec newPos = position_to_camera(g, e->pos);
+
+	camera_render(g, e->pos, e->sprite);
+	al_draw_filled_rectangle(newPos.x, newPos.y, newPos.x + e->hitbox->size.x, newPos.y + e->hitbox->size.y, C_RED);
+
+	if (g->keys[ALLEGRO_KEY_V]) {
+		level_change(g, 1);
+		printf("MUDANDO DE NIVEL\n");
+	}
+}
+
+int load1(game *g)
+{
+	int cameraID = camera_create(g);
+
+	entity *player = entity_create(g);
+	subscribe(g->envs[RENDER_ENV], player, player_render);
+	player->pos = vec_create(100.0, 100.0);
+	player->sprite = spriteProvider_get(g->sprites, "assets/mysha.png");
+	hitbox_attatch(player, 32.0, 32.0, 0);
+
+	return 0;
+}
+
+int unload1(game *g)
+{
+	return 1;
+}
+
+int load2(game *g)
+{
+	int cameraID = camera_create(g);
+
+	entity *player = entity_create(g);
+	subscribe(g->envs[RENDER_ENV], player, player_render);
+	player->pos = vec_create(200.0, 200.0);
+	player->sprite = spriteProvider_get(g->sprites, "assets/mysha.png");
+	hitbox_attatch(player, 32.0, 32.0, 0);
+
+	return 0;
+}
+
+int unload2(game *g)
+{
+	return 1;
+}
 
 int main()
 {	
-	G = game_create();
+	level *l1 = level_create(load1, unload1);
+	level *l2 = level_create(load2, unload2);
+
+	level *levels[] = {l1, l2};
+
+	game *G = game_create(1, 0, levels);
+
+	/*
 	
 	int collision_env = insert_env(G, processEnv_create(G->n_envs));
 	cameraID = camera_create(G);
@@ -97,7 +150,6 @@ int main()
 	
 	subscribe(G->envs[PROCESS_ENV], player, player_process);
 	subscribe(G->envs[RENDER_ENV], player, player_render);
-
 
 	const char *map_data[] = {
 		"11111111111111111111",
@@ -117,7 +169,9 @@ int main()
 		"11111111111111111111",
 	};
 
-	tilemap_load(G, map_data, 64, 15, 20, collision_env, RENDER_ENV, soil_render);
+	tilemap_load(G, map_data, 32, 15, 20, collision_env, RENDER_ENV, soil_render);
+
+	*/
 
 	if (game_process(G))
 		return 1;

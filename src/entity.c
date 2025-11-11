@@ -7,9 +7,15 @@
 #include "env.h"
 #include "entity.h"
 
-int destroy_entity(entity *e)
+int destroy_entity(entity *e, game *g)
 {
     entity_destroy(e);
+    return 0;
+}
+
+int destroy_entity_level(entity *e, game *g)
+{
+    entity_destroy_level(e);
     return 0;
 }
 
@@ -25,6 +31,7 @@ entity *entity_create(game *G)
     e->n_envs = 1;
 
     e->id = G->envs[MASTER_ENV]->subscribe(e, G->envs[MASTER_ENV], destroy_entity);
+    subscribe(G->envs[LEVEL_ENV], e, destroy_entity_level);
 
     return e;
 }
@@ -46,8 +53,24 @@ entity *entity_destroy(entity *e)
     free(e);
 }
 
+entity *entity_destroy_level(entity *e)
+{
+    if (e->data)
+        free(e->data);
+ 
+    if (e->hitbox)
+        free(e->hitbox);
 
-int subscribe(struct env *environment, entity *e, int (*process)(entity *))
+    for (size_t i = 0; i < e->n_envs; i++) {
+        if (e->envs[i]->id != LEVEL_ENV)
+            e->envs[i]->unsubscribe(e, e->envs[i]);
+    }
+    free(e->envs);
+
+    free(e);
+}
+
+int subscribe(struct env *environment, entity *e, int (*process)(entity *, game *))
 {   
     for (int i = e->n_envs - 1; i >= 0; i--) {
         if (e->envs[i] == environment)

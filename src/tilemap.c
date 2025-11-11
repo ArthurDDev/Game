@@ -4,7 +4,7 @@
 #include "entity.h"
 #include "collision.h"
 
-void tilemap_load(game *G, const char **data, int tilesize, int n_rows, int n_cols, int collision_env, int render_env, int (*renderFunc)(entity *e))
+void tilemap_load(game *G, const char **data, int tilesize, int n_rows, int n_cols, int collision_env, int render_env, int (*renderFunc)(entity *e, game *g))
 {
     for (int i = 0; i < n_rows; i++) {
         for (int j = 0; j < n_cols; j++) {

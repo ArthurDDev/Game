@@ -4,6 +4,7 @@
 #include <stdio.h>
 
 #include "entity.h"
+#include "game.h"
 
 /**
  * Implementação temporária como lista encadeada
@@ -12,7 +13,7 @@
 
 struct nodo_t {
     struct nodo_t *prox;
-    int (*processFunc) (entity *e);
+    int (*processFunc) (entity *e, game *g);
     entity *entity;
 };
 
@@ -21,7 +22,7 @@ struct list_t {
     int tam;
 };
 
-int env_compute (struct env *e)
+int env_compute (struct env *e, game *g)
 {
     if (!e || !e->entities)
         return 1;
@@ -29,14 +30,14 @@ int env_compute (struct env *e)
     struct nodo_t *n = ((struct list_t *)e->entities)->head;
 
     while (n) {
-        n->processFunc(n->entity);
+        n->processFunc(n->entity, g);
         n = n->prox;
     }
 
     return 0;
 }
 
-int env_subscribe (entity *e, struct env *target, int (*processFunc) (entity *e))
+int env_subscribe (entity *e, struct env *target, int (*processFunc) (entity *e, game *g))
 {
     if (!target || !target->entities || !e)
         return 1;
