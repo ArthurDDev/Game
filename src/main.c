@@ -14,6 +14,8 @@
 #include "level.h"
 #include "sprite.h"
 
+#define COLLISION_ENV 5
+
 /*
 
 int soil_render(entity *e, game *G)
@@ -207,14 +209,16 @@ int unload2(game *g)
 */
 
 #include "menu.h"
+#include "level_1.h"
 
 int main()
 {	
 	level *menu = level_create(load_menu, unload_menu);
+	level *l1 = level_create(load_l1, unload_l1);
 
-	level *levels[] = {menu};
+	level *levels[] = {menu, l1};
 
-	game *G = game_create(1, 0, levels);
+	game *G = game_create(2, 0, levels);
 	/*
 	
 
