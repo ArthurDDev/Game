@@ -28,13 +28,15 @@ int env_compute (struct env *e, game *g)
         return 1;
 
     struct nodo_t *n = ((struct list_t *)e->entities)->head;
+    struct nodo_t *n_prox = NULL;
 
     while (n) {
+        n_prox = n->prox;
         if (!g->can_process)
             return 1;
         if (n->processFunc(n->entity, g) != 0)
             printf("Erro ao processar entidade %d no ambiente %d\n", n->entity->id, e->id);
-        n = n->prox;
+        n = n_prox;
     }
 
     return 0;

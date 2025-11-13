@@ -1,9 +1,12 @@
-#ifndef __PLAYER
-#define __PLAYER
+#include "player.h"
+
+#include <stdio.h>
 
 #include "engine.h"
-#include "player.h"
 #include "shot.h"
+
+#define SHOTSPEED 20.0
+
 
 struct playerData {
 	vec velocity;
@@ -52,11 +55,30 @@ int process_player(entity *e, game *g)
 	g->camera->pos.x = e->pos.x - WW/2;
 	g->camera->pos.y = e->pos.y - HH/2;
 
+
+	vec shotVel = vec_create(0.0, 0.0);
+	if (g->keys[ALLEGRO_KEY_W]) {
+		shotVel.y = - SHOTSPEED;
+		if (g->keys[ALLEGRO_KEY_D])
+			shotVel.x = SHOTSPEED;
+		else if (g->keys[ALLEGRO_KEY_A])
+			shotVel.x = - SHOTSPEED;
+	}
+	else if (g->keys[ALLEGRO_KEY_S]) {
+		shotVel.y = SHOTSPEED;
+		if (g->keys[ALLEGRO_KEY_D])
+			shotVel.x = SHOTSPEED;
+		else if (g->keys[ALLEGRO_KEY_A])
+			shotVel.x = - SHOTSPEED;
+	}
+	else
+		shotVel.x = SHOTSPEED * pdata->direction;
+
 	if (g->keys[ALLEGRO_KEY_H]) {
 		g->keys[ALLEGRO_KEY_H] = 0;
-		init_shot(g, vec_add(e->pos, vec_create(0.0, -20.0)), vec_create(1.0, 0.0), e);
+		init_shot(g, vec_add(e->pos, vec_create(0.0, -20.0)), shotVel, e);
 	}
-
+	
 	return 0;
 }
 
@@ -118,5 +140,3 @@ int destroy_player(game *g, entity *e)
 
     return 0;
 }
-
-#endif

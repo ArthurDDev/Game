@@ -35,7 +35,6 @@ int load_l1(game *G)
 
 	tilemap_load(G, map_data, 48, 13, 40, collision_env, RENDER_ENV, soil_render);
 
-
     return 0;
 }
 

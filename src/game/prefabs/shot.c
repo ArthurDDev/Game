@@ -12,11 +12,13 @@ int shot_process(entity *e, game *g)
 
     struct shotData *sdata = (struct shotData *)e->data;
 
-    //e->pos = vec_add(e->pos, sdata->vel);
-    e->pos = vec_add(e->pos, vec_create(15.0, 0.0));
+    e->pos = vec_add(e->pos, sdata->vel);
 
-    if (collides_env(e, g->envs[5]))
+    if (collides_env(e, g->envs[5])) {
+        sdata->player->pos = e->pos;
         entity_destroy(e, g);
+        return 0;
+    }
 
     return 0;
 }
