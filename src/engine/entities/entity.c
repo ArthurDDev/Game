@@ -13,7 +13,7 @@ int destroy_entity(entity *e, game *g)
     if (!g)
         return 1;
     
-    entity_destroy(e);
+    entity_destroy(e, g);
     return 0;
 }
 
@@ -43,8 +43,9 @@ entity *entity_create(game *G)
     return e;
 }
 
-entity *entity_destroy(entity *e)
+entity *entity_destroy(entity *e, game *g)
 {
+    
     if (!e)
         return NULL;
     
@@ -57,9 +58,10 @@ entity *entity_destroy(entity *e)
     if (e->hitbox != NULL)
         free(e->hitbox);
 
-    for (size_t i = 1; i < e->n_envs; i++) {
-        e->envs[i]->unsubscribe(e, e->envs[i]);
+    for (int i = 0; i < g->n_envs; i++) {
+        g->envs[i]->unsubscribe(e, g->envs[i]);
     }
+
     if (e->envs != NULL)
         free(e->envs);
     

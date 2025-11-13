@@ -3,6 +3,7 @@
 
 #include "engine.h"
 #include "player.h"
+#include "shot.h"
 
 struct playerData {
 	vec velocity;
@@ -33,7 +34,7 @@ int process_player(entity *e, game *g)
 	e->pos.y ++;
 	if (collides_env(e, g->envs[5])) {
 		vel.y = 0.0;
-		if (g->keys[ALLEGRO_KEY_W])
+		if (g->keys[ALLEGRO_KEY_SPACE])
 			vel.y = -30.0;
 	}
 	e->pos.y --;
@@ -50,6 +51,11 @@ int process_player(entity *e, game *g)
 
 	g->camera->pos.x = e->pos.x - WW/2;
 	g->camera->pos.y = e->pos.y - HH/2;
+
+	if (g->keys[ALLEGRO_KEY_H]) {
+		g->keys[ALLEGRO_KEY_H] = 0;
+		init_shot(g, vec_add(e->pos, vec_create(0.0, -20.0)), vec_create(1.0, 0.0), e);
+	}
 
 	return 0;
 }

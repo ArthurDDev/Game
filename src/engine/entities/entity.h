@@ -21,7 +21,7 @@ struct entity {
 };
 
 entity *entity_create(game *G);
-entity *entity_destroy(entity *e);
+entity *entity_destroy(entity *e, game *g);
 
 entity *entity_destroy_level(entity *e);
 

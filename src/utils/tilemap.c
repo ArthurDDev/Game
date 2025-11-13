@@ -53,6 +53,16 @@ void tilemap_load(game *G, const char **data, int tilesize, int n_rows, int n_co
                     subscribe(G->envs[render_env], soil, renderFunc);
                     subscribe(G->envs[collision_env], soil, NULL);
                 } break;
+                case '2': {
+                    entity *soil = entity_create(G);
+                    soil->pos = vec_create(j * tilesize, i * tilesize);
+                    soil->sprite = sprite_create(G, 1, vec_create((double)tilesize, (double)tilesize), (const char *[]){
+                        "assets/sheet/grapple_00.png",
+                    }, SPR_TOP | SPR_LEFT);
+                    hitbox_attatch(soil, tilesize, tilesize, HB_TOP | HB_LEFT);
+                    subscribe(G->envs[render_env], soil, renderFunc);
+                    subscribe(G->envs[collision_env], soil, NULL);
+                } break;
             }
         }
     }

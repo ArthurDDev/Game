@@ -123,7 +123,6 @@ int load_menu(game *G)
     create_backdrop(G);
 
     entity *menu = entity_create(G);
-    printf("Chegou até aqui\n");
     struct mdata *data = malloc(sizeof(struct mdata));
     menu->data = data;
     data->selected = 0;

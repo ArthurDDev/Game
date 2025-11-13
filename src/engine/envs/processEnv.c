@@ -32,7 +32,8 @@ int env_compute (struct env *e, game *g)
     while (n) {
         if (!g->can_process)
             return 1;
-        n->processFunc(n->entity, g);
+        if (n->processFunc(n->entity, g) != 0)
+            printf("Erro ao processar entidade %d no ambiente %d\n", n->entity->id, e->id);
         n = n->prox;
     }
 
@@ -86,7 +87,8 @@ int env_unsubscribe (entity *e, struct env *target)
 
     free(n);
 
-    return ((struct list_t *)target->entities)->tam --;
+    ((struct list_t *)target->entities)->tam--;
+    return 0;
 }
 
 env *env_destroy (struct env *e)
