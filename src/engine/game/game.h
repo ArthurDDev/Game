@@ -10,7 +10,7 @@ typedef struct spriteProvider spriteProvider;
 typedef struct entity entity;
 typedef struct level level;
 
-#define FPS 30.0
+#define FPS 3.0
 
 #define WW 700
 #define HH 480

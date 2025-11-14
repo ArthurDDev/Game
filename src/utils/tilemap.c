@@ -54,6 +54,7 @@ void tilemap_load(game *G, const char **data, int tilesize, int n_rows, int n_co
                     subscribe(G->envs[collision_env], soil, NULL);
                 } break;
                 case '2': {
+                    
                     entity *soil = entity_create(G);
                     soil->pos = vec_create(j * tilesize, i * tilesize);
                     soil->sprite = sprite_create(G, 1, vec_create((double)tilesize, (double)tilesize), (const char *[]){

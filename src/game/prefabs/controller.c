@@ -9,6 +9,9 @@ struct controllerData {
 
 int controller_render(entity *e, game *g)
 {
+    if (!e || !g)
+        return 1;
+
     struct controllerData *cdata = (struct controllerData *)e->data;
 
     if (!cdata)
