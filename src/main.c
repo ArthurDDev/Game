@@ -15,7 +15,7 @@ int main()
 		level_create(load_l1, unload_l1),
 	};
 
-	game *G = game_create(2, 1, levels);
+	game *G = game_create(2, 0, levels);
 
 	if (game_process(G))
 		return 1;

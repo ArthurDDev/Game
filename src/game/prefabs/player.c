@@ -13,6 +13,7 @@
 #define WALK_ACC 2.0
 #define WALK_DEACC 3.0
 #define MAX_SPEED 20.0
+#define JUMP_STRENGTH 30.0
 
 enum pstate {
 	IDLE,
@@ -32,17 +33,15 @@ struct playerData {
 	sprite *idleSprite;
 };
 
-int isOnGround(entity *e, game *g)
+char isOnGround(entity *e, game *g)
 {
 	struct playerData *pdata = e->data;
 
-	int collides;
+	e->pos = vec_add(e->pos, vec_mult(pdata->gravityDir, 1.0));
 
-	vec_add(e->pos, pdata->gravityDir);
+	char collides = collides_env(e, g->envs[COLLISION_ENV]);
 
-	collides = collides_env(e, g->envs[COLLISION_ENV]);
-
-	vec_sub(e->pos, pdata->gravityDir);
+	e->pos = vec_sub(e->pos, vec_mult(pdata->gravityDir, 1.0));
 
 	return collides;
 }
@@ -55,29 +54,38 @@ int process_player(entity *e, game *g)
 	// Gravidade
 	vec vel = pdata->velocity;
 	
-	if (!isOnGround(e, g)) {
+	if (!isOnGround(e, g))
 		vel = vec_add(vel, vec_mult(vec_normalize(pdata->gravityDir), GRAVITY_STRENGTH));
-		printf("Não está no chão\n");
-	}
-	else
-		printf("Está no chão\n");
 
 	// Input
+
+	if (isOnGround(e, g))
+		if (g->keys[ALLEGRO_KEY_SPACE])
+			vel = vec_sub(vel, vec_mult(vec_normalize(pdata->gravityDir), JUMP_STRENGTH));
+
 	if (fabs(pdata->gravityDir.x) < fabs(pdata->gravityDir.y)) {
 		// Movimentando na horizontal
 		if ((g->keys[ALLEGRO_KEY_D] ^ g->keys[ALLEGRO_KEY_A])) {
 			if (g->keys[ALLEGRO_KEY_D]) {
+				pdata->direction = 1;
 				if (vel.x < MAX_SPEED) { 
-					vel.x = (vel.x + WALK_ACC);
+					if (vel.x < 0)
+						vel.x += WALK_DEACC;
+					else
+						vel.x = (vel.x + WALK_ACC);
 					if (vel.x > MAX_SPEED)
-					vel.x = MAX_SPEED;
+						vel.x = MAX_SPEED;
 				}
 			}
 			if (g->keys[ALLEGRO_KEY_A]) {
+				pdata->direction = -1;
 				if (vel.x > -MAX_SPEED) { 
-					vel.x = (vel.x - WALK_ACC);
-					if (vel.x < MAX_SPEED)
-					vel.x = -MAX_SPEED;
+					if (vel.x > 0)
+						vel.x -= WALK_DEACC;
+					else
+						vel.x = (vel.x - WALK_ACC);
+					if (vel.x < -MAX_SPEED)
+						vel.x = -MAX_SPEED;
 				}
 			}
 		}
@@ -94,13 +102,17 @@ int process_player(entity *e, game *g)
 	else {
 		// Movimentando na vertical
 	}
-	printf("vel: %f %f\n", vel.x, vel.y);
-	printf("pos: %f %f\n", e->pos.x, e->pos.y);
 	e->pos = vec_add(e->pos, vel);
+	printf("Player pos: %.2f, %.2f\n", e->pos.x, e->pos.y);
+	printf("Player vel: %.2f, %.2f\n", vel.x, vel.y);
+
 	// Colisões
 	entity *col = collides_env(e, g->envs[COLLISION_ENV]);
+
+	if (col)
+		printf("Collides with hitbox: %d %d %d %d \n", e->hitbox->offset.x, e->hitbox->offset.y, col->pos.x, col->pos.y);
+
 	if (col) {
-		printf("Está colidindo\n");
 		while (col) {
 			while (collides(e, col)) {
 				if (pdata->velocity.x != 0 || pdata->velocity.y != 0)
@@ -130,6 +142,8 @@ int process_player(entity *e, game *g)
 	}
 
 	pdata->velocity = vel;
+
+	g->camera->pos = vec_create(e->pos.x - WW/2, e->pos.y - HH / 2 - 50.0);
 
 	return 0;
 }
