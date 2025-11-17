@@ -4,6 +4,7 @@
 #include "entity.h"
 #include "collision.h"
 #include "sprite.h"
+#include "world.h"
 
 void tilemap_load(game *G, const char **data, int tilesize, int n_rows, int n_cols, int collision_env, int render_env, int (*renderFunc)(entity *e, game *g))
 {
@@ -51,7 +52,8 @@ void tilemap_load(game *G, const char **data, int tilesize, int n_rows, int n_co
                     }, SPR_TOP | SPR_LEFT);
                     hitbox_attatch(soil, tilesize, tilesize, HB_TOP | HB_LEFT);
                     subscribe(G->envs[render_env], soil, renderFunc);
-                    subscribe(G->envs[collision_env], soil, NULL);
+                    if (dir != 0)
+                        subscribe(G->envs[collision_env], soil, NULL);
                 } break;
                 case '2': {
                     
@@ -63,6 +65,20 @@ void tilemap_load(game *G, const char **data, int tilesize, int n_rows, int n_co
                     hitbox_attatch(soil, tilesize, tilesize, HB_TOP | HB_LEFT);
                     subscribe(G->envs[render_env], soil, renderFunc);
                     subscribe(G->envs[collision_env], soil, NULL);
+                    subscribe(G->envs[collision_env + 1], soil, NULL);
+
+                    struct groundData *gdata = malloc(sizeof(struct groundData));
+                    soil->data = gdata;
+
+                    if (dir == 1)
+                        gdata->direction = vec_create(0.0, 1.0);
+                    else if (dir == 2)
+                        gdata->direction = vec_create(-1.0, 0.0);
+                    else if (dir == 4)
+                        gdata->direction = vec_create(0.0, -1.0);
+                    else
+                        gdata->direction = vec_create(1.0, 0.0);
+
                 } break;
             }
         }

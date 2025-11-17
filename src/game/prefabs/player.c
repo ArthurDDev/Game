@@ -5,13 +5,14 @@
 
 #include "engine.h"
 #include "shot.h"
+#include "level_1.h"
 
-#define SHOTSPEED 20.0
-#define COLLISION_ENV 5
+#define SHOTSPEED 40.0
 #define GRAVITY_STRENGTH 2.0
 #define GRAVITY_STRENGTH_FALLING 2.2
 #define WALK_ACC 2.0
 #define WALK_DEACC 3.0
+#define FLOATING_DEACC 1.0
 #define MAX_SPEED 20.0
 #define JUMP_STRENGTH 30.0
 
@@ -22,44 +23,36 @@ enum pstate {
 	WALKING,
 };
 
-struct playerData {
-	vec velocity;
-	int direction;
-
-	int state;
-	vec gravityDir;
-
-	sprite *walkingSprite;
-	sprite *idleSprite;
-};
-
-char isOnGround(entity *e, game *g)
+char isOnSurface(entity *e, game *g, vec surface)
 {
-	struct playerData *pdata = e->data;
+	e->pos = vec_add(e->pos, vec_mult(surface, 1.0));
 
-	e->pos = vec_add(e->pos, vec_mult(pdata->gravityDir, 1.0));
+	entity *collides = collides_env(e, g->envs[COLLISION_ENV]);
 
-	char collides = collides_env(e, g->envs[COLLISION_ENV]);
+	e->pos = vec_sub(e->pos, vec_mult(surface, 1.0));
 
-	e->pos = vec_sub(e->pos, vec_mult(pdata->gravityDir, 1.0));
-
-	return collides;
+	if (collides != NULL)
+		return 1;
+	else
+		return 0;
 }
 
 int process_player(entity *e, game *g)
 {
 	//
     struct playerData *pdata = e->data;
-
+	
 	// Gravidade
 	vec vel = pdata->velocity;
-	
-	if (!isOnGround(e, g))
+	char onGround = isOnSurface(e, g, pdata->gravityDir);
+
+	if (!onGround) {
 		vel = vec_add(vel, vec_mult(vec_normalize(pdata->gravityDir), GRAVITY_STRENGTH));
+	}
 
 	// Input
-
-	if (isOnGround(e, g))
+	// Movimentação
+	if (onGround)
 		if (g->keys[ALLEGRO_KEY_SPACE])
 			vel = vec_sub(vel, vec_mult(vec_normalize(pdata->gravityDir), JUMP_STRENGTH));
 
@@ -90,27 +83,60 @@ int process_player(entity *e, game *g)
 			}
 		}
 		else {
-			if (fabs(vel.x) <= WALK_DEACC)
-				vel.x = 0;
-			else if (vel.x > 0)
-				vel.x -= WALK_DEACC;
-			else
-				vel.x += WALK_DEACC;
+			if (onGround) {
+				if (fabs(vel.x) <= WALK_DEACC)
+					vel.x = 0;
+				else if (vel.x > 0)
+					vel.x -= WALK_DEACC;
+				else
+					vel.x += WALK_DEACC;
+			}
+			else {
+				if (fabs(vel.x) <= FLOATING_DEACC)
+					vel.x = 0;
+				else if (vel.x > 0)
+					vel.x -= FLOATING_DEACC;
+				else
+					vel.x += FLOATING_DEACC;
+			}
 		}
+		if ((isOnSurface(e, g, vec_create(1.0, 0.0))  && vel.x > 0) || 
+			(isOnSurface(e, g, vec_create(-1.0, 0.0)) && vel.x < 0))
+			vel.x = 0;
+		if (isOnSurface(e, g, vec_invert(pdata->gravityDir)) && (pdata->gravityDir.y * vel.y < 0))
+			vel.y = 0;
 
 	}
 	else {
 		// Movimentando na vertical
 	}
 	e->pos = vec_add(e->pos, vel);
-	printf("Player pos: %.2f, %.2f\n", e->pos.x, e->pos.y);
-	printf("Player vel: %.2f, %.2f\n", vel.x, vel.y);
+
+
+	// Teleporte
+
+	vec shotDir = vec_create(0.0, 0.0);
+
+	if (g->keys[ALLEGRO_KEY_D])
+		shotDir.x = 1.0;
+	else if (g->keys[ALLEGRO_KEY_A])
+		shotDir.x = -1.0;
+	if (g->keys[ALLEGRO_KEY_S])
+		shotDir.y = 1.0;
+	else if (g->keys[ALLEGRO_KEY_W])
+		shotDir.y = -1.0;
+
+	if (shotDir.x == 0 && shotDir.y == 0)
+		shotDir = pdata->lastDir;
+
+	if (g->keys[ALLEGRO_KEY_N]) {
+		g->keys[ALLEGRO_KEY_N] = 0;
+		init_shot(g, vec_add(e->pos, vec_mult(pdata->gravityDir, -20)), vec_mult(vec_normalize(pdata->lastDir), SHOTSPEED), e);
+	}
+	pdata->lastDir = shotDir;
 
 	// Colisões
 	entity *col = collides_env(e, g->envs[COLLISION_ENV]);
-
-	if (col)
-		printf("Collides with hitbox: %d %d %d %d \n", e->hitbox->offset.x, e->hitbox->offset.y, col->pos.x, col->pos.y);
 
 	if (col) {
 		while (col) {
@@ -134,11 +160,12 @@ int process_player(entity *e, game *g)
 		else
 			e->pos.y = floor(e->pos.y);
 		
-		if (pdata->gravityDir.x != 0)
-			vel.x = 0;
-		else
-			vel.y = 0;	
-		//vel = vec_create(vel.x * pdata->gravityDir.y, vel.y = pdata->gravityDir.x);
+		if (isOnSurface(e, g, pdata->gravityDir)) {
+			if (pdata->gravityDir.x != 0)
+				vel.x = 0;
+			else
+				vel.y = 0;	
+		}
 	}
 
 	pdata->velocity = vel;
@@ -198,6 +225,7 @@ int init_player(game *g, vec pos)
 	player->pos = pos;
 	pdata->velocity = vec_create(0.0, 0.0);
 	pdata->gravityDir = vec_create(0.0, 1.0);
+	pdata->lastDir = vec_create(1.0, 0.0);
 
 	subscribe(g->envs[PROCESS_ENV], player, process_player);
     subscribe(g->envs[RENDER_ENV], player, render_player);

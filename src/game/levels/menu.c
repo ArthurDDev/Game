@@ -118,8 +118,6 @@ int process_menu(entity *e, game *G)
 
 int load_menu(game *G)
 {
-    printf("Carregando menu...\n");
-
     create_backdrop(G);
 
     entity *menu = entity_create(G);
@@ -138,8 +136,6 @@ int load_menu(game *G)
 
 int unload_menu(game *G)
 {
-    printf("Descarregando menu...\n");
-
     if (!G)
         return 1;
 

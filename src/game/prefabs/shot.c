@@ -1,5 +1,8 @@
 #include "engine.h"
 
+#include "player.h"
+#include "world.h"
+
 struct shotData {
     vec vel;
     entity *player;
@@ -11,11 +14,19 @@ int shot_process(entity *e, game *g)
         return -1;
 
     struct shotData *sdata = (struct shotData *)e->data;
+    struct playerData *pdata = (struct playerData *)sdata->player->data;
 
     e->pos = vec_add(e->pos, sdata->vel);
+    entity *soil;
 
     if (collides_env(e, g->envs[5])) {
-        sdata->player->pos = e->pos;
+        soil = collides_env(e, g->envs[6]);
+        if (soil) {
+            sdata->player->pos = e->pos;
+            pdata->velocity = sdata->vel;
+            struct groundData *gdata = (struct groundData *)soil->data;
+            pdata->gravityDir = gdata->direction;
+        }
         entity_destroy(e, g);
         return 0;
     }
