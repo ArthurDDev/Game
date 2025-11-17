@@ -10,7 +10,6 @@
 
 int load_l1(game *G)
 {
-	
 	init_controller(G);
 	
     camera_create(G);
@@ -20,6 +19,8 @@ int load_l1(game *G)
     int collision_env = insert_env(G, processEnv_create(G->n_envs));
 	int teleport_collision_env = insert_env(G, processEnv_create(G->n_envs));
 
+	printf("Collision Env: %d\n", collision_env);
+	printf("Teleport Collision Env: %d\n", teleport_collision_env);
 
 	const char *map_data[] = {
 		"111111111111111111110000000000000000000",

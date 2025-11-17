@@ -21,8 +21,8 @@ int shot_process(entity *e, game *g)
     e->pos = vec_add(e->pos, sdata->vel);
     entity *soil;
 
-    if (collides_env(e, g->envs[5])) {
-        soil = collides_env(e, g->envs[6]);
+    if (collides_env(e, g->envs[6])) {
+        soil = collides_env(e, g->envs[7]);
         if (soil) {
             sdata->player->pos = e->pos;
             pdata->velocity = sdata->vel;

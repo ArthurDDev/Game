@@ -3,10 +3,6 @@
 
 #include <allegro5/allegro_primitives.h>
 
-struct controllerData {
-    int life;
-};
-
 int controller_render(entity *e, game *g)
 {
     if (!e || !g)
@@ -17,7 +13,14 @@ int controller_render(entity *e, game *g)
     if (!cdata)
         return -1;
     
-    al_draw_filled_rectangle(10, 10, 10 + (cdata->life * 1), 30, al_map_rgb(255, 0, 0));
+    for (int i = 0; i < cdata->maxLife; i++) {
+        if (cdata->life > i)
+            e->sprite->current_frame = 0;
+        else
+            e->sprite->current_frame = 1;
+
+        render_sprite(e->sprite, 10.0 + i * 48.0, 10.0, 3.0, 3.0);
+    }
 
     return 0;
 }
@@ -25,17 +28,6 @@ int controller_render(entity *e, game *g)
 int controller_process(entity *e, game *g)
 {
     struct controllerData *cdata = (struct controllerData *)e->data;
-
-    if (g->keys[ALLEGRO_KEY_UP]) {
-        cdata->life += 1;
-        if (cdata->life > 100)
-            cdata->life = 100;
-    }
-    if (g->keys[ALLEGRO_KEY_DOWN]) {
-        cdata->life -= 1;
-        if (cdata->life < 0)
-            cdata->life = 0;
-    }
 
     return 0;
 }
@@ -50,12 +42,19 @@ int init_controller(game *g)
     struct controllerData *cdata = malloc(sizeof(struct controllerData));
     controller->data = cdata;
     
-    cdata->life = 100;
+    cdata->life = 2;
+    cdata->maxLife = 4;
     
-    subscribe(g->envs[RENDER_ENV], controller, controller_render);
+    subscribe(g->envs[UI_RENDER_ENV], controller, controller_render);
     subscribe(g->envs[PROCESS_ENV], controller, controller_process);
 
     g->envs[LEVEL_ENV]->unsubscribe(controller, g->envs[LEVEL_ENV]);
+
+    controller->sprite = sprite_create(g, 2, vec_create(16.0, 16.0), (const char *[]){
+        "assets/heart/heart_0.png",
+        "assets/heart/heart_1.png"}
+    , SPR_TOP | SPR_LEFT);
+    controller->sprite->delay = -1;
 
     return 0;
 }

@@ -9,10 +9,12 @@
 
 sprite *render_sprite(sprite *s, double x, double y, double scale_x, double scale_y)
 {
-    s->timer += 1;
-    if (s->timer >= s->delay) {
-        s->current_frame = (s->current_frame + 1) % s->n_images;
-        s->timer = 0;
+    if (s->delay != -1) {
+            s->timer += 1;
+        if (s->timer >= s->delay) {
+            s->current_frame = (s->current_frame + 1) % s->n_images;
+            s->timer = 0;
+        }
     }
    
     al_draw_scaled_bitmap(

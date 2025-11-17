@@ -32,11 +32,11 @@ void level_change(game *g, int next_level)
     g->envs[LEVEL_ENV]->destroy(g->envs[LEVEL_ENV]);
     g->envs[LEVEL_ENV] = processEnv_create(LEVEL_ENV);
     
-    for (int i = 5; i < g->n_envs; i++) {
+    for (int i = 6; i < g->n_envs; i++) {
         g->envs[i]->destroy(g->envs[i]);
         g->envs[i] = NULL;
     }
-    g->n_envs = 5;
+    g->n_envs = 6;
 
     g->cur_level = g->levels[next_level];
     g->cur_level->load(g);

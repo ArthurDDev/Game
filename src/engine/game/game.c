@@ -40,7 +40,7 @@ game *game_create(size_t n_levels, int first, level **levels)
 
     // Ambientes
 
-    g->n_envs = 5;
+    g->n_envs = 6;
     g->envs = malloc(sizeof(env *) * g->n_envs);
 
     g->envs[MASTER_ENV] = processEnv_create(MASTER_ENV);
@@ -48,6 +48,7 @@ game *game_create(size_t n_levels, int first, level **levels)
     g->envs[PROCESS_ENV] = processEnv_create(PROCESS_ENV);
     g->envs[ASYNC_PROCESS_ENV] = processEnv_create(ASYNC_PROCESS_ENV);
     g->envs[RENDER_ENV] = processEnv_create(RENDER_ENV);
+    g->envs[UI_RENDER_ENV] = processEnv_create(UI_RENDER_ENV);
 
     // Sprites
     g->sprites = spriteProvider_create();
@@ -109,7 +110,9 @@ int game_process(game *g)
             
                 al_clear_to_color(al_map_rgb(0, 0, 0));
                 g->envs[RENDER_ENV]->compute(g->envs[RENDER_ENV], g);
+                g->envs[UI_RENDER_ENV]->compute(g->envs[UI_RENDER_ENV], g);
                 al_flip_display();
+
 
                 for(int i = 0; i < ALLEGRO_KEY_MAX; i++)
                     g->keys[i] &= ~KEY_SEEN;

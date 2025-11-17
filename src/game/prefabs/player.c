@@ -53,8 +53,10 @@ int process_player(entity *e, game *g)
 	// Input
 	// Movimentação
 	if (onGround)
-		if (g->keys[ALLEGRO_KEY_SPACE])
+		if (g->keys[ALLEGRO_KEY_SPACE]) {
+			g->keys[ALLEGRO_KEY_SPACE] = 0;
 			vel = vec_sub(vel, vec_mult(vec_normalize(pdata->gravityDir), JUMP_STRENGTH));
+		}
 
 	double *moveAxis;
 	char rightMove, leftMove;

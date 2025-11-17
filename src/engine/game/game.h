@@ -10,7 +10,7 @@ typedef struct spriteProvider spriteProvider;
 typedef struct entity entity;
 typedef struct level level;
 
-#define FPS 3.0
+#define FPS 30.0
 
 #define WW 700
 #define HH 480
@@ -27,6 +27,7 @@ typedef struct level level;
 #define ASYNC_PROCESS_ENV 2
 #define RENDER_ENV 3
 #define LEVEL_ENV 4
+#define UI_RENDER_ENV 5
 
 #define KEY_SEEN 1
 #define KEY_DOWN 2
