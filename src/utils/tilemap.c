@@ -57,6 +57,18 @@ void tilemap_load(game *G, const char **data, int tilesize, int n_rows, int n_co
                 } break;
                 case '2': {
                     
+                    dir = 0;
+
+                    if (i == 0 || data[i-1][j] == '0')
+                        dir += 1; // Top
+                    if (j == 0 || data[i][j-1] == '0')
+                        dir += 2; // Left
+                    if (i == n_rows - 1 || data[i+1][j] == '0')
+                        dir += 4; // Bottom
+                    if (j == n_cols - 1 || data[i][j+1] == '0')
+                        dir += 8; // Right
+
+
                     entity *soil = entity_create(G);
                     soil->pos = vec_create(j * tilesize, i * tilesize);
                     soil->sprite = sprite_create(G, 1, vec_create((double)tilesize, (double)tilesize), (const char *[]){
@@ -73,11 +85,11 @@ void tilemap_load(game *G, const char **data, int tilesize, int n_rows, int n_co
                     if (dir == 1)
                         gdata->direction = vec_create(0.0, 1.0);
                     else if (dir == 2)
-                        gdata->direction = vec_create(-1.0, 0.0);
+                        gdata->direction = vec_create(1.0, 0.0);
                     else if (dir == 4)
                         gdata->direction = vec_create(0.0, -1.0);
                     else
-                        gdata->direction = vec_create(1.0, 0.0);
+                        gdata->direction = vec_create(-1.0, 0.0);
 
                 } break;
             }

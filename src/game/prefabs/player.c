@@ -56,60 +56,80 @@ int process_player(entity *e, game *g)
 		if (g->keys[ALLEGRO_KEY_SPACE])
 			vel = vec_sub(vel, vec_mult(vec_normalize(pdata->gravityDir), JUMP_STRENGTH));
 
+	double *moveAxis;
+	char rightMove, leftMove;
+
 	if (fabs(pdata->gravityDir.x) < fabs(pdata->gravityDir.y)) {
 		// Movimentando na horizontal
-		if ((g->keys[ALLEGRO_KEY_D] ^ g->keys[ALLEGRO_KEY_A])) {
-			if (g->keys[ALLEGRO_KEY_D]) {
-				pdata->direction = 1;
-				if (vel.x < MAX_SPEED) { 
-					if (vel.x < 0)
-						vel.x += WALK_DEACC;
-					else
-						vel.x = (vel.x + WALK_ACC);
-					if (vel.x > MAX_SPEED)
-						vel.x = MAX_SPEED;
-				}
+		moveAxis = &vel.x;
+		rightMove = g->keys[ALLEGRO_KEY_D];
+		leftMove = g->keys[ALLEGRO_KEY_A];
+	}
+	else {
+		// Movimentando na vertical
+		moveAxis = &vel.y;
+		rightMove = g->keys[ALLEGRO_KEY_S];
+		leftMove = g->keys[ALLEGRO_KEY_W];
+	}
+
+	if ((rightMove ^ leftMove)) {
+		if (rightMove) {
+			pdata->direction = 1;
+			if (*moveAxis < MAX_SPEED) { 
+				if (*moveAxis < 0)
+					*moveAxis += WALK_DEACC;
+				else
+					*moveAxis += WALK_ACC;
+				if (*moveAxis > MAX_SPEED)
+					*moveAxis = MAX_SPEED;
 			}
-			if (g->keys[ALLEGRO_KEY_A]) {
-				pdata->direction = -1;
-				if (vel.x > -MAX_SPEED) { 
-					if (vel.x > 0)
-						vel.x -= WALK_DEACC;
-					else
-						vel.x = (vel.x - WALK_ACC);
-					if (vel.x < -MAX_SPEED)
-						vel.x = -MAX_SPEED;
-				}
+		}
+		if (leftMove) {
+			pdata->direction = -1;
+			if (*moveAxis > -MAX_SPEED) { 
+				if (*moveAxis > 0)
+					*moveAxis -= WALK_DEACC;
+				else
+					*moveAxis -= WALK_ACC;
+				if (*moveAxis < -MAX_SPEED)
+					*moveAxis = -MAX_SPEED;
 			}
+		}
+	}
+	else {
+		if (onGround) {
+			if (fabs(*moveAxis) <= WALK_DEACC)
+				*moveAxis = 0;
+			else if (*moveAxis > 0)
+				*moveAxis -= WALK_DEACC;
+			else
+				*moveAxis += WALK_DEACC;
 		}
 		else {
-			if (onGround) {
-				if (fabs(vel.x) <= WALK_DEACC)
-					vel.x = 0;
-				else if (vel.x > 0)
-					vel.x -= WALK_DEACC;
-				else
-					vel.x += WALK_DEACC;
-			}
-			else {
-				if (fabs(vel.x) <= FLOATING_DEACC)
-					vel.x = 0;
-				else if (vel.x > 0)
-					vel.x -= FLOATING_DEACC;
-				else
-					vel.x += FLOATING_DEACC;
-			}
+			if (fabs(*moveAxis) <= FLOATING_DEACC)
+				*moveAxis = 0;
+			else if (*moveAxis > 0)
+				*moveAxis -= FLOATING_DEACC;
+			else
+				*moveAxis += FLOATING_DEACC;
 		}
+	}
+	
+	if (fabs(pdata->gravityDir.x) < fabs(pdata->gravityDir.y)) {
 		if ((isOnSurface(e, g, vec_create(1.0, 0.0))  && vel.x > 0) || 
 			(isOnSurface(e, g, vec_create(-1.0, 0.0)) && vel.x < 0))
 			vel.x = 0;
 		if (isOnSurface(e, g, vec_invert(pdata->gravityDir)) && (pdata->gravityDir.y * vel.y < 0))
 			vel.y = 0;
-
 	}
 	else {
-		// Movimentando na vertical
+		if ((isOnSurface(e, g, vec_create(0.0, 1.0))  && vel.y > 0) || 
+			(isOnSurface(e, g, vec_create(0.0, -1.0)) && vel.y < 0))
+			vel.y = 0;
+		if (isOnSurface(e, g, vec_invert(pdata->gravityDir)) && (pdata->gravityDir.y * vel.y < 0))
+			vel.x = 0;
 	}
+	
 	e->pos = vec_add(e->pos, vel);
 
 
