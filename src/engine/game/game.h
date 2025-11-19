@@ -12,8 +12,8 @@ typedef struct level level;
 
 #define FPS 30.0
 
-#define WW 700
-#define HH 480
+#define WW 1080
+#define HH 720
 
 #define C_BLACK al_map_rgb(0, 0, 0)
 #define C_WHITE al_map_rgb(255, 255, 255)

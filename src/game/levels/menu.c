@@ -17,8 +17,8 @@ int render_backdrop(entity *e, game *G)
     e->sprite->current_frame = 0;
     e->sprite->timer = 0;
     for (int i = 0; i < 4; i++) {
-        render_sprite(e->sprite, (data->position * i) % WW, 0, 3.0, 3.0);
-        render_sprite(e->sprite, (data->position * i) % WW - WW, 0, 3.0, 3.0);
+        render_sprite(e->sprite, (data->position * i) % WW, 0, 6.0, 6.0);
+        render_sprite(e->sprite, (data->position * i) % WW - WW, 0, 6.0, 6.0);
         e->sprite->current_frame = e->sprite->current_frame + 1;
     }
 

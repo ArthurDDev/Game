@@ -36,13 +36,13 @@ void tilemap_load(game *G, const char **data, int tilesize, int n_rows, int n_co
 
                     dir = 0;
 
-                    if (i == 0 || data[i-1][j] == '0')
+                    if (i == 0 || data[i-1][j] != '1' && data[i-1][j] != '2')
                         dir += 1; // Top
-                    if (j == 0 || data[i][j-1] == '0')
+                    if (j == 0 || data[i][j-1] != '1' && data[i][j-1] != '2')
                         dir += 2; // Left
-                    if (i == n_rows - 1 || data[i+1][j] == '0')
+                    if (i == n_rows - 1 || data[i+1][j] != '1' && data[i+1][j] != '2')
                         dir += 4; // Bottom
-                    if (j == n_cols - 1 || data[i][j+1] == '0')
+                    if (j == n_cols - 1 || data[i][j+1] != '1' && data[i][j+1] != '2')
                         dir += 8; // Right
 
                     entity *soil = entity_create(G);
@@ -92,6 +92,12 @@ void tilemap_load(game *G, const char **data, int tilesize, int n_rows, int n_co
                         gdata->direction = vec_create(-1.0, 0.0);
 
                 } break;
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                    spike_init(G, data[i][j] - '3', vec_create(j * tilesize, i * tilesize));
+                    break;
             }
         }
     }

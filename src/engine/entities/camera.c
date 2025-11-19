@@ -27,6 +27,12 @@ vec position_to_camera(game *G, vec pos)
 
 void camera_render(game *G, vec pos, sprite *spr, double scale_x, double scale_y)
 {
+    if (pos.x > G->camera->pos.x + WW || pos.x + spr->size.x * scale_x < G->camera->pos.x ||
+        pos.y > G->camera->pos.y + HH || pos.y + spr->size.y * scale_y < G->camera->pos.y) {
+        return;
+    }
+
     vec newPos = position_to_camera(G, pos);
     render_sprite(spr, newPos.x, newPos.y, scale_x, scale_y);
+
 }

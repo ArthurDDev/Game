@@ -12,4 +12,7 @@ struct groundData {
 
 int soil_render(entity *e, game *G);
 
+int spike_init(game *g, int dir, vec pos);
+
+
 #endif
