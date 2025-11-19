@@ -15,6 +15,7 @@
 #define FLOATING_DEACC 1.0
 #define MAX_SPEED 20.0
 #define JUMP_STRENGTH 30.0
+#define DASH_STRENGTH 50.0
 
 enum pstate {
 	IDLE,
@@ -154,8 +155,10 @@ int process_player(entity *e, game *g)
 	if (g->keys[ALLEGRO_KEY_N]) {
 		g->keys[ALLEGRO_KEY_N] = 0;
 		init_shot(g, vec_add(e->pos, vec_mult(pdata->gravityDir, -20)), vec_mult(vec_normalize(pdata->lastDir), SHOTSPEED), e);
+		vel = vec_sub(vel, vec_mult(vec_normalize(pdata->lastDir), DASH_STRENGTH));
 	}
 	pdata->lastDir = shotDir;
+
 
 	// Colisões
 	entity *col = collides_env(e, g->envs[COLLISION_ENV]);
