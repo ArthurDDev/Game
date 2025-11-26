@@ -38,6 +38,12 @@ game *game_create(size_t n_levels, int first, level **levels)
     // Camera
     g->camera = NULL;
 
+    // Player
+    g->player = NULL;
+
+    // Controller
+    g->controller = NULL;
+
     // Ambientes
 
     g->n_envs = 6;

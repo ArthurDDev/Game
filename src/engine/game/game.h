@@ -43,6 +43,12 @@ struct game {
     // Camera
     entity *camera;
     
+    // Player
+    entity *player;
+
+    // Controller
+    entity *controller;
+
     // Input
     unsigned char keys[ALLEGRO_KEY_MAX];
     

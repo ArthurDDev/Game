@@ -34,7 +34,7 @@ int controller_process(entity *e, game *g)
 
 int init_controller(game *g)
 {
-    if (!g)
+    if (!g || g->controller != NULL)
         return -1;
 
     entity *controller = entity_create(g);
@@ -55,6 +55,8 @@ int init_controller(game *g)
         "assets/heart/heart_1.png"}
     , SPR_TOP | SPR_LEFT);
     controller->sprite->delay = -1;
+
+    g->controller = controller;
 
     return 0;
 }

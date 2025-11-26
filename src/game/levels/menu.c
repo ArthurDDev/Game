@@ -120,18 +120,27 @@ int process_menu(entity *e, game *G)
 int load_menu(game *G)
 {
     create_backdrop(G);
-
+    
     entity *menu = entity_create(G);
     struct mdata *data = malloc(sizeof(struct mdata));
     menu->data = data;
-    data->selected = 0;
-    data->options = malloc(3 * sizeof(char *));
-    data->options[0] = strdup("Iniciar");
-    data->options[1] = strdup("Opcoes");
-    data->options[2] = strdup("Sair");
     subscribe(G->envs[RENDER_ENV], menu, render_menu);
     subscribe(G->envs[PROCESS_ENV], menu, process_menu);
 
+    if (G->controller == NULL) {
+        data->selected = 0;
+        data->options = malloc(3 * sizeof(char *));
+        data->options[0] = strdup("Iniciar");
+        data->options[1] = strdup("Opcoes");
+        data->options[2] = strdup("Sair");
+    }
+    else {
+        data->selected = 1;
+        data->options = malloc(2 * sizeof(char *));
+        data->options[0] = strdup("Continuar");
+        data->options[1] = strdup("Sair");
+    }
+    
     return 0;
 }
 

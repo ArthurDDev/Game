@@ -6,6 +6,7 @@
 #include "engine.h"
 #include "shot.h"
 #include "level_1.h"
+#include "controller.h"
 
 #define SHOTSPEED 40.0
 #define GRAVITY_STRENGTH 2.0
@@ -22,7 +23,19 @@ enum pstate {
 	JUMPING,
 	FALLING,
 	WALKING,
+	SHORT,
+	SHORT_WALKING
 };
+
+int damage_player(game *g, entity *e, int damage)
+{
+	struct controllerData *cdata = (struct controllerData *)(g->controller->data);
+	cdata->life -= damage;
+
+	level_change(g, damage);
+
+	return 0;
+}
 
 char isOnSurface(entity *e, game *g, vec surface)
 {
@@ -53,14 +66,28 @@ int process_player(entity *e, game *g)
 
 	// Input
 	// Movimentação
-	if (onGround)
+	if (onGround) {
 		if (g->keys[ALLEGRO_KEY_SPACE]) {
 			g->keys[ALLEGRO_KEY_SPACE] = 0;
 			vel = vec_sub(vel, vec_mult(vec_normalize(pdata->gravityDir), JUMP_STRENGTH));
 		}
+		pdata->state = IDLE;
+		if ((pdata->gravityDir.x == 0.0 && pdata->gravityDir.y == 1.0 && g->keys[ALLEGRO_KEY_S]) ||
+			(pdata->gravityDir.x == 0.0 && pdata->gravityDir.y == -1.0 && g->keys[ALLEGRO_KEY_W]) ||
+			(pdata->gravityDir.x == 1.0 && pdata->gravityDir.y == 0.0 && g->keys[ALLEGRO_KEY_D]) ||
+			(pdata->gravityDir.x == -1.0 && pdata->gravityDir.y == 0.0 && g->keys[ALLEGRO_KEY_A])) {
+			pdata->state = SHORT;
+		}
+	}
+	else
+		pdata->state = FALLING;
 
 	double *moveAxis;
 	char rightMove, leftMove;
+
+	double max_speed = MAX_SPEED;
+	if (pdata->state == SHORT || pdata->state == SHORT_WALKING)
+		max_speed = MAX_SPEED / 2.0;
 
 	if (fabs(pdata->gravityDir.x) < fabs(pdata->gravityDir.y)) {
 		// Movimentando na horizontal
@@ -76,26 +103,31 @@ int process_player(entity *e, game *g)
 	}
 
 	if ((rightMove ^ leftMove)) {
+		if (pdata->state == SHORT)
+			pdata->state = SHORT_WALKING;
+		else if (pdata->state != FALLING)
+			pdata->state = WALKING;
+
 		if (rightMove) {
 			pdata->direction = 1;
-			if (*moveAxis < MAX_SPEED) { 
+			if (*moveAxis < max_speed) { 
 				if (*moveAxis < 0)
 					*moveAxis += WALK_DEACC;
 				else
 					*moveAxis += WALK_ACC;
-				if (*moveAxis > MAX_SPEED)
-					*moveAxis = MAX_SPEED;
+				if (*moveAxis > max_speed)
+					*moveAxis = max_speed;
 			}
 		}
 		if (leftMove) {
 			pdata->direction = -1;
-			if (*moveAxis > -MAX_SPEED) { 
+			if (*moveAxis > -max_speed) { 
 				if (*moveAxis > 0)
 					*moveAxis -= WALK_DEACC;
 				else
 					*moveAxis -= WALK_ACC;
-				if (*moveAxis < -MAX_SPEED)
-					*moveAxis = -MAX_SPEED;
+				if (*moveAxis < -max_speed)
+					*moveAxis = -max_speed;
 			}
 		}
 	}
@@ -211,16 +243,37 @@ int render_player(entity *e, game *g)
 	vec newPos = position_to_camera(g, e->pos);
 	newPos = vec_sub(newPos, e->hitbox->offset);
 
-	if (pdata->velocity.x != 0.0)
-		e->sprite = pdata->walkingSprite;
-	else
-		e->sprite = pdata->idleSprite;
+	switch (pdata->state) {
+		case IDLE:
+			e->sprite = pdata->idleSprite;
+			break;
+		case WALKING:
+			e->sprite = pdata->walkingSprite;
+			break;
+		case SHORT:
+			e->sprite = pdata->shortSprite;
+			break;
+		case SHORT_WALKING:
+			e->sprite = pdata->shortSpriteWalk;
+			break;
+		case FALLING:
+			e->sprite = pdata->idleSprite;
+			break;
+		case JUMPING:
+			// Manter o sprite atual
+			break;
+		default:
+			e->sprite = pdata->idleSprite;
+			break;
+	}
 
 	if (pdata->direction == 1)
 		camera_render(g, e->pos, e->sprite, 3.0, 3.0);
 	else
 		camera_render(g, e->pos, e->sprite, -3.0, 3.0);
 	//al_draw_filled_rectangle(newPos.x, newPos.y, newPos.x + e->hitbox->size.x, newPos.y + e->hitbox->size.y, al_map_rgba(255, 0, 0, 0.01));
+
+	camera_render_hitbox(g, e);
 
 	return 0;
 }
@@ -247,8 +300,19 @@ int init_player(game *g, vec pos)
 		"assets/characters/idle_0.png",
 		"assets/characters/idle_1.png",
 	}, SPR_BOTTOM);
+
+	pdata->shortSprite = sprite_create(g, 2, vec_create(32.0, 32.0), (const char *[]){
+		"assets/characters/short_0.png",
+		"assets/characters/short_1.png",
+	}, SPR_BOTTOM);
     
-	pdata->state = IDLE;
+	pdata->shortSpriteWalk = sprite_create(g, 4, vec_create(32.0, 32.0), (const char *[]){
+		"assets/characters/shortwalk_0.png",
+		"assets/characters/shortwalk_1.png",
+		"assets/characters/shortwalk_2.png",
+		"assets/characters/shortwalk_3.png",
+	}, SPR_BOTTOM);
+
     
 	// Movimentação
 	player->pos = pos;
@@ -259,6 +323,8 @@ int init_player(game *g, vec pos)
 	subscribe(g->envs[PROCESS_ENV], player, process_player);
     subscribe(g->envs[RENDER_ENV], player, render_player);
 
+	g->player = player;
+
     return player->id;
 }
 
@@ -266,6 +332,15 @@ int destroy_player(game *g, entity *e)
 {
     if(!g || !e)
         return 1;
+
+	g->player = NULL;
+
+	struct playerData *pdata = e->data;
+
+	sprite_destroy(pdata->shortSprite);
+	sprite_destroy(pdata->shortSpriteWalk);
+	sprite_destroy(pdata->idleSprite);
+	sprite_destroy(pdata->walkingSprite);
 
     return 0;
 }

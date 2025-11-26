@@ -23,9 +23,9 @@
 #### Essencial
 
 - [X] Background
-- [ ] Sprite agaixando
+- [X] Sprite agaxando
 - [ ] Sprite Atirando
-- [ ] Levar dano e restaurar
+- [X] Levar dano e restaurar
 - [ ] Tela Game over
 
 Armadilhas:
@@ -34,6 +34,7 @@ Armadilhas:
 - [ ] Plataforma que esmaga
 - [ ] Alçapão
 - [ ] laser que ativa / desativa
+- [ ] Obstaculos que ativam e desativam
 
 Perguntas para o professor:
 

@@ -7,6 +7,7 @@
 #include "game.h"
 #include "env.h"
 #include "sprite.h"
+#include "collision.h"
 
 int camera_create(game *G)
 {
@@ -35,4 +36,21 @@ void camera_render(game *G, vec pos, sprite *spr, double scale_x, double scale_y
     vec newPos = position_to_camera(G, pos);
     render_sprite(spr, newPos.x, newPos.y, scale_x, scale_y);
 
+}
+
+void camera_render_hitbox(game *G, entity *e)
+{
+    if (!G || !e || !e->hitbox)
+        return;
+
+    vec pos = vec_sub(e->pos, e->hitbox->offset);
+    vec camPos = G->camera->pos;
+
+    if (pos.x > camPos.x + WW || pos.x + e->hitbox->size.x < camPos.x ||
+        pos.y > camPos.y + HH || pos.y + e->hitbox->size.y < camPos.y) {
+        return;
+    }
+
+    vec newPos = position_to_camera(G, pos);
+    al_draw_filled_rectangle(pos.x - camPos.x, pos.y - camPos.y, pos.x + e->hitbox->size.x - camPos.x, pos.y + e->hitbox->size.y - camPos.y, al_map_rgba(255, 0, 0, 0.3));
 }
