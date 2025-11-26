@@ -6,7 +6,7 @@
 #include "engine.h"
 #include "world.h"
 #include "controller.h"
-
+#include "background.h"
 
 int load_l1(game *G)
 {
@@ -14,6 +14,8 @@ int load_l1(game *G)
 	
     camera_create(G);
 	
+	init_background(G);
+
     init_player(G, vec_create(100.0, 400.0));
 	
     int collision_env = insert_env(G, processEnv_create(G->n_envs));
