@@ -196,6 +196,10 @@ int process_player(entity *e, game *g)
 	pdata->velocity = vel;
 
 	g->camera->pos = vec_create(e->pos.x - WW/2, e->pos.y - HH / 2 - 50.0);
+	if (g->camera->pos.x < 0)
+		g->camera->pos.x = 0;
+	if (g->camera->pos.y < 0)
+		g->camera->pos.y = 0;
 
 	return 0;
 }
