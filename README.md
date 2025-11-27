@@ -36,7 +36,7 @@ Armadilhas:
 - [X] Plataforma que esmaga
 - [ ] Alçapão
 - [ ] laser que ativa / desativa
-- [ ] Obstaculos que ativam e desativam
+- [ ] Obstaculos que ativam e desativam com timer
 
 Perguntas para o professor:
 
