@@ -2,6 +2,7 @@
 
 #include "engine.h"
 #include "level_1.h"
+#include "player.h"
 
 #define HEAD_ACC 3;
 
@@ -21,6 +22,11 @@ int process_head(entity *e, game *g)
         return 1;
 
     struct headdata *data = (struct headdata *)e->data;
+
+    if (collides(e, g->player)) {
+        damage_player(g, g->player, 1);
+        return 0;
+    }
 
     if (collides_env(e, g->envs[COLLISION_ENV]))
         data->vel = 0;

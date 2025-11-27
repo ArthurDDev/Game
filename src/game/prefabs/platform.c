@@ -19,7 +19,7 @@ int process_platform(entity *e, game *g)
     struct platformdata *pdata = (struct platformdata *)e->data;
     if (pdata->timer == 0) {
         pdata->state = pdata->state ^ 0b1;
-        pdata->timer = 30;
+        pdata->timer = 45;
         if (pdata->state == 0)
             g->envs[COLLISION_ENV]->unsubscribe(e, g->envs[COLLISION_ENV]);
         else

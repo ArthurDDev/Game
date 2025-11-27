@@ -44,7 +44,7 @@ int process_laser(entity *e, game *g)
             ldata->timer = 120;
         }
         else if (collides(e, g->player)) {
-            damage_player(g, g->player, 1);
+            damage_player(g, g->player, 0);
         }
     }
 

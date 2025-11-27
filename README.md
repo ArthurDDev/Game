@@ -27,7 +27,7 @@
 - [ ] Sprite Atirando
 - [X] Levar dano e restaurar
 - [X] Tela Game over
-- [ ] Deixar claro que o sistema de morte e respawn não é um bug
+- [X] Deixar claro que o sistema de morte e respawn não é um bug
 
 Armadilhas:
 
@@ -41,7 +41,7 @@ Armadilhas:
 #### Extra
 
 - [ ] Mais um obstáculo dinamico
-- [X] Rastejar
+- [X] Rastejar (10pts)
 - [ ] Item de barra de vida
 - [ ] Pulo duplo
 

@@ -27,16 +27,26 @@ enum pstate {
 	SHORT_WALKING
 };
 
-int damage_player(game *g, entity *e, int damage)
+int damage_player(game *g, entity *e, int damagetype)
 {
-	if (!g || !e || !damage)
+	if (!g || !e)
 		return 1;
 
 
 	struct controllerData *cdata = (struct controllerData *)(g->controller->data);
-	cdata->life -= damage;
+	struct playerData *pdata = (struct playerData *)e->data;
+
+	if (pdata->grace > 0)
+		return 0;
+
+	pdata->grace = 30;
+
+	cdata->life -= 1;
 
 	if (cdata->life > 0) {
+		if (damagetype == 0)
+			return 0;
+
 		level_change(g, 1);
 		return 0;
 	}
@@ -73,11 +83,6 @@ int process_player(entity *e, game *g)
 
 	if (!onGround) {
 		vel = vec_add(vel, vec_mult(vec_normalize(pdata->gravityDir), GRAVITY_STRENGTH));
-	}
-
-	if (g->keys[ALLEGRO_KEY_P]) {
-		level_change(g, 0);
-		return 0;
 	}
 
 	// Input
@@ -251,6 +256,9 @@ int process_player(entity *e, game *g)
 
 	pdata->velocity = vel;
 
+	if (pdata->grace > 0)
+		pdata->grace --;
+
 	g->camera->pos = vec_create(e->pos.x - WW/2, e->pos.y - HH / 2 - 50.0);
 	if (g->camera->pos.x < 0)
 		g->camera->pos.x = 0;
@@ -340,6 +348,8 @@ int init_player(game *g, vec pos)
 	pdata->velocity = vec_create(0.0, 0.0);
 	pdata->gravityDir = vec_create(0.0, 1.0);
 	pdata->lastDir = vec_create(1.0, 0.0);
+
+	pdata->grace = 0;
 
 	subscribe(g->envs[PROCESS_ENV], player, process_player);
     subscribe(g->envs[RENDER_ENV], player, render_player);

@@ -19,11 +19,13 @@ struct playerData {
 	sprite *idleSprite;
 	sprite *shortSprite;
 	sprite *shortSpriteWalk;
+
+	int grace;
 };
 
 int init_player(game *g, vec pos);
 int destroy_player(entity *e, game *g);
 
-int damage_player(game *g, entity *e, int damage);
+int damage_player(game *g, entity *e, int damagetype);
 
 #endif
