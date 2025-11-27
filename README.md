@@ -26,11 +26,11 @@
 - [X] Sprite agaxando
 - [ ] Sprite Atirando
 - [X] Levar dano e restaurar
-- [ ] Tela Game over
+- [X] Tela Game over
 
 Armadilhas:
 
-- [ ] Espinho estático
+- [X] Espinho estático
 - [ ] Plataforma que esmaga
 - [ ] Alçapão
 - [ ] laser que ativa / desativa

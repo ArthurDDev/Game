@@ -1,6 +1,8 @@
 #include "world.h"
 #include "engine.h"
 
+#include "player.h"
+
 int soil_render(entity *e, game *G)
 {
 	camera_render(G, e->pos, e->sprite, 3.0, 3.0);
@@ -19,7 +21,6 @@ int spike_process(entity *e, game *G)
 int spike_render(entity *e, game *G)
 {
 	camera_render(G, e->pos, e->sprite, 3.0, 3.0);
-	camera_render_hitbox(G, e);
 
 	return 0;
 }

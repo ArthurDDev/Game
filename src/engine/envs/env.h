@@ -1,6 +1,11 @@
 #ifndef __ENV
 #define __ENV
 
+/*
+ * Um ambiente(env) é uma maneira genérica de agrupar dados que pode ser implementadade maneiras diferentes comforme a necessidade,
+ * E executar funcões baseado nisso - lista encadeada, fila de prioridades, arvore kd, etc
+ */
+
 typedef struct entity entity;
 typedef struct game game;
 

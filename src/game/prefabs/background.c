@@ -35,10 +35,7 @@ int process_background(entity *e, game *G)
     if (!e || !G)
         return 1;
 
-    struct bddata *data = (struct bddata *)e->data;
-    //data->position.x = (int)(data->position.x + 1) % WW;
-
-    e->pos.x = (G->camera->pos.x);
+    e->pos = G->camera->pos;
 
     return 0;
 }

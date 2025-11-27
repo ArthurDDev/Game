@@ -27,7 +27,8 @@ int controller_render(entity *e, game *g)
 
 int controller_process(entity *e, game *g)
 {
-    struct controllerData *cdata = (struct controllerData *)e->data;
+    if (!e || !g)
+        return 1;
 
     return 0;
 }
@@ -42,7 +43,7 @@ int init_controller(game *g)
     struct controllerData *cdata = malloc(sizeof(struct controllerData));
     controller->data = cdata;
     
-    cdata->life = 2;
+    cdata->life = 4;
     cdata->maxLife = 4;
     
     subscribe(g->envs[UI_RENDER_ENV], controller, controller_render);
@@ -61,10 +62,12 @@ int init_controller(game *g)
     return 0;
 }
 
-int destroy_controller(game *g, entity *e)
+int destroy_controller(entity *e, game *g)
 {
     if (!g || !e)
         return -1;
+
+    g->controller = NULL;
 
     return 0;
 }

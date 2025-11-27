@@ -29,10 +29,21 @@ enum pstate {
 
 int damage_player(game *g, entity *e, int damage)
 {
+	if (!g || !e || !damage)
+		return 1;
+
+
 	struct controllerData *cdata = (struct controllerData *)(g->controller->data);
 	cdata->life -= damage;
 
-	level_change(g, damage);
+	if (cdata->life > 0) {
+		level_change(g, 1);
+		return 0;
+	}
+	else {
+		level_change(g, 0);
+		return 0;
+	}
 
 	return 0;
 }
@@ -62,6 +73,11 @@ int process_player(entity *e, game *g)
 
 	if (!onGround) {
 		vel = vec_add(vel, vec_mult(vec_normalize(pdata->gravityDir), GRAVITY_STRENGTH));
+	}
+
+	if (g->keys[ALLEGRO_KEY_P]) {
+		level_change(g, 0);
+		return 0;
 	}
 
 	// Input
@@ -271,9 +287,6 @@ int render_player(entity *e, game *g)
 		camera_render(g, e->pos, e->sprite, 3.0, 3.0);
 	else
 		camera_render(g, e->pos, e->sprite, -3.0, 3.0);
-	//al_draw_filled_rectangle(newPos.x, newPos.y, newPos.x + e->hitbox->size.x, newPos.y + e->hitbox->size.y, al_map_rgba(255, 0, 0, 0.01));
-
-	camera_render_hitbox(g, e);
 
 	return 0;
 }
@@ -323,15 +336,18 @@ int init_player(game *g, vec pos)
 	subscribe(g->envs[PROCESS_ENV], player, process_player);
     subscribe(g->envs[RENDER_ENV], player, render_player);
 
+	player->destroy = destroy_player;
+
 	g->player = player;
 
     return player->id;
 }
 
-int destroy_player(game *g, entity *e)
+int destroy_player(entity *e, game *g)
 {
-    if(!g || !e)
+    if(!g || !e) {
         return 1;
+	}
 
 	g->player = NULL;
 

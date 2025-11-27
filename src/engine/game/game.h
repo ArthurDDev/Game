@@ -61,6 +61,7 @@ struct game {
     
     // Níveis
     level *cur_level;
+    size_t cur_level_id;
     size_t n_levels;
     level **levels;
     char can_process;

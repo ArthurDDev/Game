@@ -18,12 +18,14 @@ struct entity {
     sprite *sprite;
     env **envs;
     size_t n_envs;
+
+    int (*destroy) (entity *e, game *g);
 };
 
 entity *entity_create(game *G);
 entity *entity_destroy(entity *e, game *g);
 
-entity *entity_destroy_level(entity *e);
+entity *entity_destroy_level(entity *e, game *g);
 
 
 // Insere entidade em um ambiente qualquer

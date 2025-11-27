@@ -9,12 +9,23 @@
 #include "sprite.h"
 #include "collision.h"
 
+int camera_destroy(entity *e, game *g)
+{
+    if (!g || !e)
+        return 1;
+
+    g->camera = NULL;
+
+    return 0;
+}
+
 int camera_create(game *G)
 {
     entity *camera = entity_create(G);
     camera->pos = vec_create(0.0, 0.0);
 
     G->camera = camera;
+    camera->destroy = camera_destroy;
     // Depois atualizar para permitir escala
 
     return camera->id;
@@ -51,6 +62,5 @@ void camera_render_hitbox(game *G, entity *e)
         return;
     }
 
-    vec newPos = position_to_camera(G, pos);
     al_draw_filled_rectangle(pos.x - camPos.x, pos.y - camPos.y, pos.x + e->hitbox->size.x - camPos.x, pos.y + e->hitbox->size.y - camPos.y, al_map_rgba(255, 0, 0, 0.3));
 }

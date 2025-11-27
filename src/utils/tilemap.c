@@ -36,13 +36,13 @@ void tilemap_load(game *G, const char **data, int tilesize, int n_rows, int n_co
 
                     dir = 0;
 
-                    if (i == 0 || data[i-1][j] != '1' && data[i-1][j] != '1')
+                    if (i == 0 || (data[i-1][j] != '1' && data[i-1][j] != '1'))
                         dir += 1; // Top
-                    if (j == 0 || data[i][j-1] != '1' && data[i][j-1] != '1')
+                    if (j == 0 || (data[i][j-1] != '1' && data[i][j-1] != '1'))
                         dir += 2; // Left
-                    if (i == n_rows - 1 || data[i+1][j] != '1' && data[i+1][j] != '1')
+                    if (i == n_rows - 1 || (data[i+1][j] != '1' && data[i+1][j] != '1'))
                         dir += 4; // Bottom
-                    if (j == n_cols - 1 || data[i][j+1] != '1' && data[i][j+1] != '1')
+                    if (j == n_cols - 1 || (data[i][j+1] != '1' && data[i][j+1] != '1'))
                         dir += 8; // Right
 
                     entity *soil = entity_create(G);
