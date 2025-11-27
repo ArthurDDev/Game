@@ -1,6 +1,7 @@
 #include "entity.h"
 
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "vec.h"
 #include "game.h"
@@ -13,7 +14,7 @@ int destroy_entity(entity *e, game *g)
     if (!g)
         return 1;
     
-    entity_destroy(e);
+    entity_destroy(e, g);
     return 0;
 }
 
@@ -22,7 +23,7 @@ int destroy_entity_level(entity *e, game *g)
     if (!g)
         return 1;
 
-    entity_destroy_level(e);
+    entity_destroy_level(e, g);
     return 0;
 }
 
@@ -36,6 +37,7 @@ entity *entity_create(game *G)
     e->envs = malloc(sizeof(env *) * 1);
     e->envs[0] = G->envs[MASTER_ENV];
     e->n_envs = 1;
+    e->destroy = NULL;
 
     e->id = G->envs[MASTER_ENV]->subscribe(e, G->envs[MASTER_ENV], destroy_entity);
     subscribe(G->envs[LEVEL_ENV], e, destroy_entity_level);
@@ -43,11 +45,14 @@ entity *entity_create(game *G)
     return e;
 }
 
-entity *entity_destroy(entity *e)
+entity *entity_destroy(entity *e, game *g)
 {
     if (!e)
         return NULL;
     
+    if (e->destroy)
+        e->destroy(e, g);
+
     if (!e->sprite)
         sprite_destroy(e->sprite);
 
@@ -57,9 +62,10 @@ entity *entity_destroy(entity *e)
     if (e->hitbox != NULL)
         free(e->hitbox);
 
-    for (size_t i = 1; i < e->n_envs; i++) {
-        e->envs[i]->unsubscribe(e, e->envs[i]);
+    for (int i = 0; i < g->n_envs; i++) {
+        g->envs[i]->unsubscribe(e, g->envs[i]);
     }
+
     if (e->envs != NULL)
         free(e->envs);
     
@@ -68,11 +74,14 @@ entity *entity_destroy(entity *e)
     return NULL;
 }
 
-entity *entity_destroy_level(entity *e)
+entity *entity_destroy_level(entity *e, game *g)
 {
     if (!e)
         return NULL;
-    
+
+    if (e->destroy)
+        e->destroy(e, g);
+
     if (e->data)
         free(e->data);
  
@@ -87,7 +96,6 @@ entity *entity_destroy_level(entity *e)
     free(e->envs);
 
     free(e);
-
     return NULL;
 }
 

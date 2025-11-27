@@ -4,6 +4,7 @@
 typedef struct game game;
 typedef struct vec vec;
 typedef struct sprite sprite;
+typedef struct entity entity;
 
 // Retorna o ID da camera
 int camera_create(game *G);
@@ -13,5 +14,7 @@ vec position_to_camera(game *G, vec pos);
 
 // Renderiza um sprite com a posição atualizada
 void camera_render(game *G, vec pos, sprite *spr, double scale_x, double scale_y);
+
+void camera_render_hitbox(game *G, entity *e);
 
 #endif

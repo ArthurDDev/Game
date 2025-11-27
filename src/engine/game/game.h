@@ -12,8 +12,8 @@ typedef struct level level;
 
 #define FPS 30.0
 
-#define WW 700
-#define HH 480
+#define WW 1080
+#define HH 720
 
 #define C_BLACK al_map_rgb(0, 0, 0)
 #define C_WHITE al_map_rgb(255, 255, 255)
@@ -27,6 +27,7 @@ typedef struct level level;
 #define ASYNC_PROCESS_ENV 2
 #define RENDER_ENV 3
 #define LEVEL_ENV 4
+#define UI_RENDER_ENV 5
 
 #define KEY_SEEN 1
 #define KEY_DOWN 2
@@ -42,6 +43,12 @@ struct game {
     // Camera
     entity *camera;
     
+    // Player
+    entity *player;
+
+    // Controller
+    entity *controller;
+
     // Input
     unsigned char keys[ALLEGRO_KEY_MAX];
     
@@ -54,6 +61,7 @@ struct game {
     
     // Níveis
     level *cur_level;
+    size_t cur_level_id;
     size_t n_levels;
     level **levels;
     char can_process;

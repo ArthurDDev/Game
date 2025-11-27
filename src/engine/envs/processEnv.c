@@ -6,11 +6,6 @@
 #include "entity.h"
 #include "game.h"
 
-/**
- * Implementação temporária como lista encadeada
- * 
- */
-
 struct nodo_t {
     struct nodo_t *prox;
     int (*processFunc) (entity *e, game *g);
@@ -24,16 +19,25 @@ struct list_t {
 
 int env_compute (struct env *e, game *g)
 {
-    if (!e || !e->entities)
+    if (!e || !e->entities || !g)
         return 1;
 
-    struct nodo_t *n = ((struct list_t *)e->entities)->head;
+    if (!g->can_process)
+        return 2;
 
-    while (n) {
+    struct nodo_t *n = ((struct list_t *)e->entities)->head;
+    struct nodo_t *n_prox = NULL;
+
+    while (n && n->processFunc) {
+        n_prox = n->prox;
+        
         if (!g->can_process)
-            return 1;
-        n->processFunc(n->entity, g);
-        n = n->prox;
+            return 2;
+
+        if (n->processFunc(n->entity, g) != 0)
+            printf("Erro ao processar entidade %d no ambiente %d\n", n->entity->id, e->id);
+
+        n = n_prox;
     }
 
     return 0;
@@ -86,7 +90,8 @@ int env_unsubscribe (entity *e, struct env *target)
 
     free(n);
 
-    return ((struct list_t *)target->entities)->tam --;
+    ((struct list_t *)target->entities)->tam--;
+    return 0;
 }
 
 env *env_destroy (struct env *e)
