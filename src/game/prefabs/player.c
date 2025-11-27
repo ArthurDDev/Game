@@ -98,6 +98,15 @@ int process_player(entity *e, game *g)
 	else
 		pdata->state = FALLING;
 
+	if (pdata->state == SHORT || pdata->state == SHORT_WALKING) {
+		e->hitbox->size.y = 24.0;
+		e->hitbox->offset.y = 24.0;
+	}
+	else {
+		e->hitbox->size.y = 48.0;
+		e->hitbox->offset.y = 48.0;
+	}
+
 	double *moveAxis;
 	char rightMove, leftMove;
 
@@ -182,7 +191,6 @@ int process_player(entity *e, game *g)
 	}
 	
 	e->pos = vec_add(e->pos, vel);
-
 
 	// Teleporte
 
