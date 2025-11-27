@@ -42,7 +42,7 @@ Armadilhas:
 
 - [ ] Mais um obstáculo dinamico
 - [X] Rastejar (10pts)
-- [ ] Item de barra de vida
+- [X] Item de barra de vida
 - [ ] Pulo duplo
 
 #### Extra x2
