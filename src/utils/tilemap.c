@@ -7,6 +7,7 @@
 #include "world.h"
 #include "press.h"
 #include "trapdoor.h"
+#include "laser.h"
 
 void tilemap_load(game *G, const char **data, int tilesize, int n_rows, int n_cols, int collision_env, int render_env, int (*renderFunc)(entity *e, game *g))
 {
@@ -56,6 +57,7 @@ void tilemap_load(game *G, const char **data, int tilesize, int n_rows, int n_co
                     subscribe(G->envs[render_env], soil, renderFunc);
                     if (dir != 0)
                         subscribe(G->envs[collision_env], soil, NULL);
+                    
                 } break;
                 case '2': {
                     
@@ -108,6 +110,11 @@ void tilemap_load(game *G, const char **data, int tilesize, int n_rows, int n_co
                 
                 case '8':
                     init_trapdoor(G, vec_create(j * tilesize, i * tilesize));
+
+                    break;
+
+                case '9':
+                    init_laser(G, vec_create(j * tilesize, i * tilesize));
 
                     break;
             }

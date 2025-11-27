@@ -35,7 +35,7 @@ Armadilhas:
 - [X] Espinho estático
 - [X] Plataforma que esmaga
 - [X] Alçapão
-- [ ] laser que ativa / desativa
+- [X] laser que ativa / desativa
 - [ ] Obstaculos que ativam e desativam com timer
 
 Perguntas para o professor:
