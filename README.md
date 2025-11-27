@@ -34,7 +34,7 @@ Armadilhas:
 - [X] Buraco
 - [X] Espinho estático
 - [X] Plataforma que esmaga
-- [ ] Alçapão
+- [X] Alçapão
 - [ ] laser que ativa / desativa
 - [ ] Obstaculos que ativam e desativam com timer
 
@@ -49,3 +49,7 @@ Perguntas para o professor:
 - [ ] Rastejar
 - [ ] Item de barra de vida
 - [ ] Pulo duplo
+
+#### Extra x2
+
+- [ ] Função unsubscribe

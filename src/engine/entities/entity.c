@@ -103,7 +103,7 @@ int subscribe(struct env *environment, entity *e, int (*process)(entity *, game 
 {   
     for (int i = e->n_envs - 1; i >= 0; i--) {
         if (e->envs[i] == environment)
-            return 0;
+            return 1;
     }
 
     e->envs = realloc(e->envs, sizeof(env *) * (e->n_envs + 1));
