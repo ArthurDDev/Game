@@ -27,11 +27,13 @@
 - [ ] Sprite Atirando
 - [X] Levar dano e restaurar
 - [X] Tela Game over
+- [ ] Deixar claro que o sistema de morte e respawn não é um bug
 
 Armadilhas:
 
+- [X] Buraco
 - [X] Espinho estático
-- [ ] Plataforma que esmaga
+- [X] Plataforma que esmaga
 - [ ] Alçapão
 - [ ] laser que ativa / desativa
 - [ ] Obstaculos que ativam e desativam

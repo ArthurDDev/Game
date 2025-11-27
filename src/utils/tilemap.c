@@ -5,6 +5,7 @@
 #include "collision.h"
 #include "sprite.h"
 #include "world.h"
+#include "press.h"
 
 void tilemap_load(game *G, const char **data, int tilesize, int n_rows, int n_cols, int collision_env, int render_env, int (*renderFunc)(entity *e, game *g))
 {
@@ -97,6 +98,11 @@ void tilemap_load(game *G, const char **data, int tilesize, int n_rows, int n_co
                 case '5':
                 case '6':
                     spike_init(G, data[i][j] - '3', vec_create(j * tilesize, i * tilesize));
+                    break;
+                
+                case '7':
+                	init_press(G, vec_create(j * tilesize, i * tilesize));
+
                     break;
             }
         }
