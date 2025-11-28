@@ -43,7 +43,18 @@ Armadilhas:
 - [X] Mais um obstáculo dinamico (15pts)
 - [X] Rastejar (10pts)
 - [X] Item de barra de vida (5pts)
-- [ ] Pulo duplo
+
+#### Polimento
+
+- [ ] Maneira de concluir jogo
+- [ ] Tela de game over
+- [ ] Revisar todo o código
+- [ ] Revisar o readme
+- [ ] Tirar placeholders
+- [ ] Adicionar animações que faltam
+- [ ] Ajustar player
+- [ ] Criar um primeiro nivel mais interessante
+
 
 #### Extra x2
 
