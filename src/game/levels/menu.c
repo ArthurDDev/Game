@@ -2,6 +2,8 @@
 
 #include <stdio.h>
 
+#include "controller.h"
+
 // Backdrop
 
 typedef struct bddata {
@@ -112,13 +114,17 @@ int process_menu(entity *e, game *G)
         G->keys[ALLEGRO_KEY_DOWN] = 0;
     }
 
+    
     if (G->keys[ALLEGRO_KEY_ENTER]) {
         G->keys[ALLEGRO_KEY_ENTER] = 0;
         
         if (!strcmp(data->options[data->selected], "Iniciar"))
             level_change(G, 1);
-        else if (!strcmp(data->options[data->selected], "Continuar"))
+        else if (!strcmp(data->options[data->selected], "Continuar")) {
+            struct controllerData *cdata = (struct controllerData *)G->controller->data;
+            cdata->life = cdata->maxLife;
             level_change(G, 1);
+        }
         else if (!strcmp(data->options[data->selected], "Opções"))
             printf("Menu de opções selecionado\n");
         else if (!strcmp(data->options[data->selected], "Sair"))

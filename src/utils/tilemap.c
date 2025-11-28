@@ -10,6 +10,7 @@
 #include "laser.h"
 #include "platform.h"
 #include "collect.h"
+#include "patrol.h"
 
 void tilemap_load(game *G, const char **data, int tilesize, int n_rows, int n_cols, int collision_env, int render_env, int (*renderFunc)(entity *e, game *g))
 {
@@ -130,6 +131,10 @@ void tilemap_load(game *G, const char **data, int tilesize, int n_rows, int n_co
                     break;
                 case 'h':
                     init_collect(G, vec_create(j * tilesize, i * tilesize));
+
+                    break;
+                case 'p':
+                    init_patrol(G, vec_create(j * tilesize, i * tilesize));
 
                     break;
             }

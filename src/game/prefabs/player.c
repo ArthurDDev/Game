@@ -48,11 +48,11 @@ int damage_player(game *g, entity *e, int damagetype)
 			return 0;
 
 		level_change(g, 1);
-		return 0;
+		return 1;
 	}
 	else {
 		level_change(g, 0);
-		return 0;
+		return 1;
 	}
 
 	return 0;
@@ -258,6 +258,10 @@ int process_player(entity *e, game *g)
 
 	if (pdata->grace > 0)
 		pdata->grace --;
+
+	if (e->pos.y > 2000)
+		if (damage_player(g, e, 1) == 1)
+			return 0;
 
 	g->camera->pos = vec_create(e->pos.x - WW/2, e->pos.y - HH / 2 - 50.0);
 	if (g->camera->pos.x < 0)
