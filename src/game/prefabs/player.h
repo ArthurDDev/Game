@@ -21,6 +21,7 @@ struct playerData {
 	sprite *shortSpriteWalk;
 
 	int grace;
+	int can_shoot;
 };
 
 int init_player(game *g, vec pos);

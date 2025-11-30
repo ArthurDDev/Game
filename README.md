@@ -46,9 +46,9 @@ Armadilhas:
 
 #### Polimento
 
-- [ ] Maneira de concluir jogo
-- [ ] Tela de game over
-- [ ] Revisar todo o código
+- [X] Maneira de concluir jogo
+- [X] Tela de game over
+- [X] Revisar todo o código
 - [ ] Revisar o readme
 - [ ] Tirar placeholders
 - [ ] Adicionar animações que faltam

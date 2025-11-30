@@ -22,6 +22,7 @@ struct env {
     int (*compute) (struct env *e, game *g);
 };
 
+// ProcessEnv é uma lista encadeada, para uso geral
 env *processEnv_create(int id);
 
 #endif

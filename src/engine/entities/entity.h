@@ -22,9 +22,13 @@ struct entity {
     int (*destroy) (entity *e, game *g);
 };
 
+// Cria uma entidade e insere no ambiente global e do nivel, retorna essa entidade ou NULL em caso de erro
 entity *entity_create(game *G);
+
+// Destroi uma entidade, tirando de todos os ambientes e liberando memória, retorna sempre NULL
 entity *entity_destroy(entity *e, game *g);
 
+// Destroi uma entidade quando passando de nivel.
 entity *entity_destroy_level(entity *e, game *g);
 
 

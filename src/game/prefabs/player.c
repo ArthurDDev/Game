@@ -88,6 +88,7 @@ int process_player(entity *e, game *g)
 	// Input
 	// Movimentação
 	if (onGround) {
+		pdata->can_shoot = 1;
 		if (g->keys[ALLEGRO_KEY_SPACE]) {
 			g->keys[ALLEGRO_KEY_SPACE] = 0;
 			vel = vec_sub(vel, vec_mult(vec_normalize(pdata->gravityDir), JUMP_STRENGTH));
@@ -199,27 +200,29 @@ int process_player(entity *e, game *g)
 
 	// Teleporte
 
-	vec shotDir = vec_create(0.0, 0.0);
+	if (pdata->can_shoot == 1) {
+		vec shotDir = vec_create(0.0, 0.0);
 
-	if (g->keys[ALLEGRO_KEY_D])
-		shotDir.x = 1.0;
-	else if (g->keys[ALLEGRO_KEY_A])
-		shotDir.x = -1.0;
-	if (g->keys[ALLEGRO_KEY_S])
-		shotDir.y = 1.0;
-	else if (g->keys[ALLEGRO_KEY_W])
-		shotDir.y = -1.0;
+		if (g->keys[ALLEGRO_KEY_D])
+			shotDir.x = 1.0;
+		else if (g->keys[ALLEGRO_KEY_A])
+			shotDir.x = -1.0;
+		if (g->keys[ALLEGRO_KEY_S])
+			shotDir.y = 1.0;
+		else if (g->keys[ALLEGRO_KEY_W])
+			shotDir.y = -1.0;
 
-	if (shotDir.x == 0 && shotDir.y == 0)
-		shotDir = pdata->lastDir;
+		if (shotDir.x == 0 && shotDir.y == 0)
+			shotDir = pdata->lastDir;
 
-	if (g->keys[ALLEGRO_KEY_N]) {
-		g->keys[ALLEGRO_KEY_N] = 0;
-		init_shot(g, vec_add(e->pos, vec_mult(pdata->gravityDir, -20)), vec_mult(vec_normalize(pdata->lastDir), SHOTSPEED), e);
-		vel = vec_sub(vel, vec_mult(vec_normalize(pdata->lastDir), DASH_STRENGTH));
+		if (g->keys[ALLEGRO_KEY_N]) {
+			g->keys[ALLEGRO_KEY_N] = 0;
+			init_shot(g, vec_add(e->pos, vec_mult(pdata->gravityDir, -20)), vec_mult(vec_normalize(pdata->lastDir), SHOTSPEED), e);
+			vel = vec_sub(vel, vec_mult(vec_normalize(pdata->lastDir), DASH_STRENGTH));
+			pdata->can_shoot = 0;
+		}
+		pdata->lastDir = shotDir;
 	}
-	pdata->lastDir = shotDir;
-
 
 	// Colisões
 	entity *col = collides_env(e, g->envs[COLLISION_ENV]);
@@ -262,6 +265,12 @@ int process_player(entity *e, game *g)
 	if (e->pos.y > 2000)
 		if (damage_player(g, e, 1) == 1)
 			return 0;
+
+	// Encerrar o jogo
+	if (e->pos.x > 9200) {
+		level_change(g, 0);
+		return 0;
+	}
 
 	g->camera->pos = vec_create(e->pos.x - WW/2, e->pos.y - HH / 2 - 50.0);
 	if (g->camera->pos.x < 0)
@@ -352,6 +361,7 @@ int init_player(game *g, vec pos)
 	pdata->velocity = vec_create(0.0, 0.0);
 	pdata->gravityDir = vec_create(0.0, 1.0);
 	pdata->lastDir = vec_create(1.0, 0.0);
+	pdata->can_shoot = 0;
 
 	pdata->grace = 0;
 

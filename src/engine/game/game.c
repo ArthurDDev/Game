@@ -18,6 +18,8 @@ game *game_create(size_t n_levels, int first, level **levels)
     if (!g)
         return NULL;
 
+
+    // Allegro
     al_init();
     al_install_keyboard();
     al_init_image_addon();

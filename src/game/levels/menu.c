@@ -89,6 +89,11 @@ int render_menu(entity *e, game *G)
             al_draw_text(G->font, C_WHITE, WW / 2, HH / 2 - 20, ALLEGRO_ALIGN_CENTRE, "Skill issue?");
 
             break;
+        
+        case WIN_MENU:
+            al_draw_text(G->font, C_WHITE, WW / 2, HH / 2 - 20, ALLEGRO_ALIGN_CENTRE, "Você venceu!");
+
+            break;
     }
     
     for (int i = 0; i < data->n_options; i++) {
@@ -125,6 +130,10 @@ int process_menu(entity *e, game *G)
             cdata->life = cdata->maxLife;
             level_change(G, 1);
         }
+        else if (!strcmp(data->options[data->selected], "Voltar ao menu")) {
+            G->controller = entity_destroy(G->controller, G);
+            level_change(G, 0);
+        }
         else if (!strcmp(data->options[data->selected], "Opções"))
             printf("Menu de opções selecionado\n");
         else if (!strcmp(data->options[data->selected], "Sair"))
@@ -154,13 +163,27 @@ int load_menu(game *G)
         data->options[1] = strdup("Opcoes");
         data->options[2] = strdup("Sair");
     }
-    else {
-        data->n_options = 2;
-        data->selected = 0;
-        data->mode = GAMEOVER_MENU;
-        data->options = malloc(2 * sizeof(char *));
-        data->options[0] = strdup("Continuar");
-        data->options[1] = strdup("Sair");
+    else{
+        struct controllerData *cdata = (struct controllerData *)G->controller->data;
+        
+        if (cdata->life == 0) {
+            data->mode = GAMEOVER_MENU;
+            data->n_options = 2;
+            data->selected = 0;
+            data->options = malloc(2 * sizeof(char *));
+            data->options[0] = strdup("Continuar");
+            data->options[1] = strdup("Sair");
+        }
+        else {
+            data->mode = WIN_MENU;
+            data->n_options = 2;
+            data->selected = 1;
+            data->options = malloc(2 * sizeof(char *));
+            data->options[0] = strdup("Voltar ao menu");
+            data->options[1] = strdup("Sair");
+        }
+
+        
     }
     
     return 0;

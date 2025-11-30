@@ -15,6 +15,7 @@ vec position_to_camera(game *G, vec pos);
 // Renderiza um sprite com a posição atualizada
 void camera_render(game *G, vec pos, sprite *spr, double scale_x, double scale_y);
 
+// Para debugar, renderiza um retangulo vermelho no local e tamanho da hitbox da entidade e
 void camera_render_hitbox(game *G, entity *e);
 
 #endif

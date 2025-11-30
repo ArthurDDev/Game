@@ -6,6 +6,8 @@ typedef struct env env;
 
 #include "vec.h"
 
+// Alinhamento da hitbox com relação a origem, exemplo:
+// HB_LEFT | HB_LEFT Para no canto superior esquerdo
 #define HB_LEFT 1
 #define HB_RIGHT 2
 #define HB_TOP 4

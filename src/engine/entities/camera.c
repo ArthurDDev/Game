@@ -26,7 +26,6 @@ int camera_create(game *G)
 
     G->camera = camera;
     camera->destroy = camera_destroy;
-    // Depois atualizar para permitir escala
 
     return camera->id;
 }
